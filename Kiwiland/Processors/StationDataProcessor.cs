@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Kiwiland.Validators;
 
@@ -20,24 +19,36 @@ namespace Kiwiland.Processors
             m_StationDataValidator = validator;
         }
 
-        public List<string> Process(string rawStationData)
+        /// <summary>
+        /// Expects a raw string of file lines, seperated by the injected delimeter.
+        /// </summary>
+        /// <returns>Processed Stations in their String format</returns>
+        public List<string> Process(List<string> rawStationData)
         {
-            if (m_Delimiter != ' ')
-            {
-                rawStationData = rawStationData.Replace(" ", "");
-            }
+            var stations = new List<string>();
 
-            var stationStrings = rawStationData.Split(m_Delimiter);
-
-            foreach (var station in stationStrings)
+            foreach (var line in rawStationData)
             {
-                if (!m_StationDataValidator.Validate(station))
+                var stationLine = line;
+                if (m_Delimiter != ' ')
                 {
-                    throw new ArgumentException("Station Data contains invalid format");
+                    stationLine = stationLine.Replace(" ", "");
+                }
+
+                var stationStrings = stationLine.Split(m_Delimiter);
+
+                foreach (var station in stationStrings)
+                {
+                    if (!m_StationDataValidator.Validate(station))
+                    {
+                        throw new ArgumentException("Station Data contains invalid format");
+                    }
+
+                    stations.Add(station);
                 }
             }
 
-            return stationStrings.ToList();
+            return stations.ToList();
         }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Kiwiland.Processors;
 using Kiwiland.Validators;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NUnit.Framework;
-using Assert = NUnit.Framework.Assert;
 
 namespace KiwilandTests.Processors
 {
@@ -28,7 +27,7 @@ namespace KiwilandTests.Processors
         [Test]
         public void TestValidInput()
         {
-            var result = m_StationDataProcessor.Process("BA2" + "," + "AB1");
+               var result = m_StationDataProcessor.Process(new List<string>{ "BA2" + "," + "AB1"});
 
             Assert.NotNull(result);
             Assert.AreEqual(2, result.Count);
@@ -39,7 +38,7 @@ namespace KiwilandTests.Processors
         [Test]
         public void TestInvalidData()
         {
-            Assert.That(() => m_StationDataProcessor.Process(INVALID_STATION_STRING + "," + "AB1"), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => m_StationDataProcessor.Process(new List<string> { INVALID_STATION_STRING + "," + "AB1" }), Throws.TypeOf<ArgumentException>());
         }
     }
 }
