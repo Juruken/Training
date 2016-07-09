@@ -63,6 +63,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Calculators\BaseCalculatorTests.cs" />
+    <Compile Include="Calculators\JourneyCalculatorTests.cs" />
     <Compile Include="Calculators\TripPermutationsCalculatorTests.cs" />
     <Compile Include="Processors\RouteDataProcessorTests.cs" />
     <Compile Include="Processors\StationDataProcessorTests.cs" />

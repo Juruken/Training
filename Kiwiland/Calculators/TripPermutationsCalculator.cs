@@ -9,8 +9,7 @@ namespace Kiwiland.Calculators
     public class TripPermutationsCalculator : ITripPermutationsCalculator
     {
         private readonly IStationProvider m_StationProvider;
-
-        private Dictionary<Tuple<string,string>, List<Trip>> m_TripsBySourceAndDestination;
+        private readonly Dictionary<Tuple<string,string>, List<Trip>> m_TripsBySourceAndDestination;
         
         public TripPermutationsCalculator(IStationProvider stationProvider)
         {

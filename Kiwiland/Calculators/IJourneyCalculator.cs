@@ -5,6 +5,6 @@ namespace Kiwiland.Calculators
 {
     public interface IJourneyCalculator
     {
-        Journey Calculate(List<Route> routes);
+        Journey Calculate(string[] routes);
     }
 }
