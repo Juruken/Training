@@ -7,7 +7,7 @@
 
         public Trip Clone()
         {
-            return new Trip()
+            return new Trip
             {
                 TotalDistance = TotalDistance,
                 TripName = TripName
