@@ -17,7 +17,7 @@
         /// </summary>
         /// <param name="routeString"></param>
         /// <returns></returns>
-        internal bool ValidNumberFormat(string routeString)
+        private bool ValidNumberFormat(string routeString)
         {
             if (routeString.Length > 3)
             {
@@ -36,17 +36,17 @@
         /// </summary>
         /// <param name="routeString"></param>
         /// <returns></returns>
-        internal bool ValidDistance(string routeString)
+        private bool ValidDistance(string routeString)
         {
             return char.IsNumber(routeString[2]) && int.Parse(routeString[2].ToString()) > 0;
         }
 
-        internal bool ValidStartingCharacter(string routeString)
+        private bool ValidStartingCharacter(string routeString)
         {
             return char.IsLetter(routeString[0]);
         }
 
-        internal bool ValidLength(string routeString)
+        private bool ValidLength(string routeString)
         {
             return routeString.Length >= 3;
         }

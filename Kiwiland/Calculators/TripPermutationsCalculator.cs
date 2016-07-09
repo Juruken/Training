@@ -78,7 +78,7 @@ namespace Kiwiland.Calculators
             }
         }
 
-        internal void ValidateStationsExist(string sourceStation, string destinationStation)
+        private void ValidateStationsExist(string sourceStation, string destinationStation)
         {
             var source = m_StationProvider.GetStation(sourceStation);
             if (source == null)

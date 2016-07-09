@@ -54,7 +54,7 @@ namespace Kiwiland.Processors
             return CalculateTrips(sourceStation, destinationStation, maximumDistance);
         }
 
-        internal List<Trip> CalculateTrips(string sourceStation, string destinationStation, int maximumDistance)
+        private List<Trip> CalculateTrips(string sourceStation, string destinationStation, int maximumDistance)
         {
             var trips = new List<Trip>();
             var sourceDestinationKey = new Tuple<string, string>(sourceStation, destinationStation);
@@ -79,7 +79,7 @@ namespace Kiwiland.Processors
             return trips;
         }
 
-        internal Trip GeneratorTrip(int currentDistance, int maximumDistance, string currentStation, string destinationStation)
+        private Trip GeneratorTrip(int currentDistance, int maximumDistance, string currentStation, string destinationStation)
         {
             if (currentDistance > maximumDistance)
                 return null;
@@ -115,7 +115,7 @@ namespace Kiwiland.Processors
             return null;
         }
 
-        internal void ValidateStationsExist(string sourceStation, string destinationStation)
+        private void ValidateStationsExist(string sourceStation, string destinationStation)
         {
             var source = m_StationProvider.GetStation(sourceStation);
             if (source == null)

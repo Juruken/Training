@@ -17,7 +17,7 @@
         /// </summary>
         /// <param name="stationString"></param>
         /// <returns></returns>
-        internal bool ValidNumberFormat(string stationString)
+        private bool ValidNumberFormat(string stationString)
         {
             if (stationString.Length > 3)
             {
@@ -36,17 +36,17 @@
         /// </summary>
         /// <param name="stationString"></param>
         /// <returns></returns>
-        internal bool ValidDistance(string stationString)
+        private bool ValidDistance(string stationString)
         {
             return char.IsNumber(stationString[2]) && int.Parse(stationString[2].ToString()) > 0;
         }
 
-        internal bool ValidStartingCharacter(string stationString)
+        private bool ValidStartingCharacter(string stationString)
         {
             return char.IsLetter(stationString[0]);
         }
         
-        internal bool ValidLength(string stationString)
+        private bool ValidLength(string stationString)
         {
             return stationString.Length >= 3;
         }

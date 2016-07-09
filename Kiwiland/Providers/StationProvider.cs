@@ -27,7 +27,7 @@ namespace Kiwiland.Processors
             return m_StationsByName.Value.ContainsKey(stationName) ? m_StationsByName.Value[stationName] : null;
         }
 
-        internal Dictionary<string, Station> LoadStations()
+        private Dictionary<string, Station> LoadStations()
         {
             var data = m_DataProvider.GetData();
             
@@ -40,7 +40,7 @@ namespace Kiwiland.Processors
         /// </summary>
         /// <param name="stationString"></param>
         /// <returns></returns>
-        internal Station CreateStation(string stationString)
+        private Station CreateStation(string stationString)
         {
             var stationName = stationString.Substring(0, 1);
 

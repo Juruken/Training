@@ -21,7 +21,7 @@ namespace Kiwiland.Providers
             return m_RoutesByStationName.Value.ContainsKey(stationName) ? m_RoutesByStationName.Value[stationName] : null;
         }
 
-        internal Dictionary<string, List<Route>> LoadRoutes()
+        private Dictionary<string, List<Route>> LoadRoutes()
         {
             var routesByStationName = new Dictionary<string, List<Route>>();
 
