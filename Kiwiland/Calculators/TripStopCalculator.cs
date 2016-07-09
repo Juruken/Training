@@ -16,6 +16,21 @@ namespace Kiwiland.Calculators
         public Trip GetFastestTipByStops(string sourceStation, string destinationStation)
         {
             var source = m_StationProvider.GetStation(sourceStation);
+
+            // TODO: 
+            /*if (route.DestinationStation == destinationStation)
+            {
+                trip = route.ConvertToTrip();
+            }
+            else
+            {
+                trip = GenerateTrip(route.Distance, maximumDistance, route.DestinationStation, destinationStation);
+
+                if (trip == null)
+                    continue;
+
+                trip.TripName = sourceStation + trip.TripName;
+            }*/
             return null;
         }
 

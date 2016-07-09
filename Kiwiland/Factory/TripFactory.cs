@@ -34,7 +34,7 @@ namespace Kiwiland.Factory
 
             var stationProvider = new StationProvider(stationDataProvider, routeProvider);
 
-            var tripDistanceCalculator = new TripDistanceDistanceCalculator(stationProvider);
+            var tripDistanceCalculator = new TripDistanceCalculator(stationProvider);
             var tripPermutationsCalculator = new TripPermutationsCalculator(stationProvider);
             var journeyCalculator = new JourneyCalculator(stationProvider, tripDistanceCalculator);
 

@@ -5,6 +5,7 @@ using Kiwiland.Data;
 
 namespace Kiwiland.Processors
 {
+    // TODO: Write Station Provider tests!
     public class StationProvider : IStationProvider
     {
         private readonly IStationDataProvider m_DataProvider;
@@ -27,9 +28,31 @@ namespace Kiwiland.Processors
 
         private Dictionary<string, Station> LoadStations()
         {
+            var stationsByStationName = new Dictionary<string, Station>();
+
             var data = m_DataProvider.GetData();
+
+            foreach (var stationString in data)
+            {
+                var station = CreateStation(stationString);
+
+                if (stationsByStationName.ContainsKey(station.Name))
+                {
+                    var existingStation = stationsByStationName[station.Name];
+
+                    foreach (var route in station.Routes)
+                    {
+                        if (!existingStation.Routes.ContainsKey(route.Key))
+                            existingStation.Routes.Add(route.Key, route.Value);
+                    }
+                }
+                else
+                {
+                    stationsByStationName.Add(station.Name, station);
+                }
+            }
             
-            return data.Select(CreateStation).ToDictionary(s => s.Name, s => s);
+            return stationsByStationName;
         }
 
         /// <summary>

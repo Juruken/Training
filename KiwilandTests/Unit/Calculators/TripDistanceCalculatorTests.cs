@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Kiwiland.Exceptions;
 using Kiwiland.Processors;
 using KiwilandTests.Calculators;
 using NUnit.Framework;
@@ -15,7 +16,7 @@ namespace KiwilandTests.Processors
         public void Setup()
         {
             SetupTests();
-            m_TripDistanceCalculator = new TripDistanceDistanceCalculator(m_StationProvider.Object);
+            m_TripDistanceCalculator = new TripDistanceCalculator(m_StationProvider.Object);
         }
         
         [Test]
@@ -31,7 +32,7 @@ namespace KiwilandTests.Processors
         [Test]
         public void TestFailToGetInvalidTrip()
         {           
-            Assert.That(() => m_TripDistanceCalculator.GetFastestTripByDistance("C", "F"), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => m_TripDistanceCalculator.GetFastestTripByDistance("C", "F"), Throws.TypeOf<InvalidStationException>());
         }
 
         [TestCase("C", "C", 30, 2, "CEBC", 11)]

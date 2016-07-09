@@ -9,7 +9,7 @@ namespace Kiwiland.Processors
     /// <summary>
     /// Responsible for calculating trips for a given source and destination location
     /// </summary>
-    public class TripDistanceDistanceCalculator : ITripDistanceCalculator
+    public class TripDistanceCalculator : ITripDistanceCalculator
     {
         // TODO: Make sure this doesn't eat up performance, pick a smaller default maximum?
         private const int DEFAULT_MAXIMUM_DISTANCE = 10000;
@@ -17,7 +17,7 @@ namespace Kiwiland.Processors
         private readonly IStationProvider m_StationProvider;
         private readonly Dictionary<Tuple<string, string>, List<Trip>> m_CalculatedTrips;
 
-        public TripDistanceDistanceCalculator(IStationProvider stationProvider)
+        public TripDistanceCalculator(IStationProvider stationProvider)
         {
             m_StationProvider = stationProvider;
             m_CalculatedTrips = new Dictionary<Tuple<string, string>, List<Trip>>();
@@ -67,14 +67,22 @@ namespace Kiwiland.Processors
             // Loop of each route to see if they can get to our required destination.
             foreach (var route in source.Routes.Values)
             {
-                var generatedTrip = GeneratorTrip(route.Distance, maximumDistance, route.DestinationStation, destinationStation);
+                Trip trip;
+                if (route.DestinationStation == destinationStation)
+                {
+                    trip = route.ConvertToTrip();
+                }
+                else
+                {
+                    trip = GenerateTrip(route.Distance, maximumDistance, route.DestinationStation, destinationStation);
 
-                if (generatedTrip == null)
-                    continue;
+                    if (trip == null)
+                        continue;
 
-                generatedTrip.TripName = sourceStation + generatedTrip.TripName;
-
-                trips.Add(generatedTrip);
+                    trip.TripName = sourceStation + trip.TripName;
+                }
+                
+                trips.Add(trip);
             }
 
             m_CalculatedTrips.Add(sourceDestinationKey, trips);
@@ -82,7 +90,7 @@ namespace Kiwiland.Processors
             return trips;
         }
 
-        private Trip GeneratorTrip(int currentDistance, int maximumDistance, string currentStation, string destinationStation)
+        private Trip GenerateTrip(int currentDistance, int maximumDistance, string currentStation, string destinationStation)
         {
             if (currentDistance > maximumDistance)
                 return null;
@@ -90,8 +98,8 @@ namespace Kiwiland.Processors
             var current = m_StationProvider.GetStation(currentStation);
             var destination = m_StationProvider.GetStation(destinationStation);
 
-            if (current.Routes.ContainsKey(destination.Name) &&
-                current.Routes[destination.Name].Distance + currentDistance < maximumDistance)
+            if (current.Routes.ContainsKey(destination.Name)
+                && current.Routes[destination.Name].Distance + currentDistance < maximumDistance)
             {
                 var trip = new Trip
                 {
@@ -104,7 +112,7 @@ namespace Kiwiland.Processors
 
             foreach (var route in current.Routes.Values)
             {
-                var potentialTrip = GeneratorTrip(currentDistance + route.Distance, maximumDistance, route.DestinationStation, destinationStation);
+                var potentialTrip = GenerateTrip(currentDistance + route.Distance, maximumDistance, route.DestinationStation, destinationStation);
 
                 if (potentialTrip == null || potentialTrip.TotalDistance >= maximumDistance)
                     continue;

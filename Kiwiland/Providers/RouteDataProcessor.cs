@@ -43,6 +43,7 @@ namespace Kiwiland.Processors
                 {
                     if (!m_RouteDataValidator.Validate(route))
                     {
+                        // TODO: Refacotor this into InvalidRouteException
                         throw new ArgumentException("Route Data contains invalid format");
                     }
 

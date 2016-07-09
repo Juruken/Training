@@ -39,13 +39,9 @@ namespace Kiwiland.Calculators
 
             foreach (var route in source.Routes.Values)
             {
-                var currentTrip = new Trip
-                {
-                    TotalDistance = route.Distance,
-                    TripName = sourceStation + route.DestinationStation
-                };
+                var trip = route.ConvertToTrip();
 
-                GeneratorTrip(tripsByTripName, currentTrip, maximumDistance, route.DestinationStation, destinationStation);
+                GeneratorTrip(tripsByTripName, trip, maximumDistance, route.DestinationStation, destinationStation);
             }
 
             var result = tripsByTripName.Values.ToList();

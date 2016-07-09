@@ -73,7 +73,7 @@ namespace KiwilandTests.Component
             Assert.NotNull(result);
         }
 
-        [Test, TestCaseSource(typeof(TestDataProvider), "GetJourneyLengthByDistanceCases")]
+        /*[Test, TestCaseSource(typeof(TestDataProvider), "GetJourneyLengthByDistanceCases")]
         public int GetJourneyLengthByDistance(string[] stations)
         {
             var result = m_TripManager.GetJourneyLengthByDistance(stations);
@@ -81,6 +81,15 @@ namespace KiwilandTests.Component
             Assert.NotNull(result);
 
             return result;
+        }*/
+
+        [Test]
+        public void GetJourneyLengthByDistance()
+        {
+            var result = m_TripManager.GetJourneyLengthByDistance(new[] { "A", "B", "C" });
+
+            Assert.NotNull(result);
+            Assert.AreEqual(9, result);
         }
     }
 }

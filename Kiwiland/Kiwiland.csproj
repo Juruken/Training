@@ -64,7 +64,7 @@
     <Compile Include="Processors\IStationDataProcessor.cs" />
     <Compile Include="Calculators\ITripDistanceCalculator.cs" />
     <Compile Include="Processors\StationDataProcessor.cs" />
-    <Compile Include="Calculators\TripDistanceDistanceCalculator.cs" />
+    <Compile Include="Calculators\TripDistanceCalculator.cs" />
     <Compile Include="Providers\FileDataProvider.cs" />
     <Compile Include="Providers\IFileDataProvider.cs" />
     <Compile Include="Providers\IRouteDataProcessor.cs" />

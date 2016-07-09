@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kiwiland.Exceptions;
 using Kiwiland.Processors;
 using Kiwiland.Validators;
 using Moq;
@@ -38,7 +39,7 @@ namespace KiwilandTests.Processors
         [Test]
         public void TestInvalidData()
         {
-            Assert.That(() => m_StationDataProcessor.Process(new List<string> { INVALID_STATION_STRING + "," + "AB1" }), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => m_StationDataProcessor.Process(new List<string> { INVALID_STATION_STRING + "," + "AB1" }), Throws.TypeOf<InvalidStationFormat>());
         }
     }
 }
