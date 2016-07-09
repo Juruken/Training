@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kiwiland", "Kiwiland.csproj", "{F9F4630C-E176-40CD-91EC-92F1FDFD31FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KiwilandTests", "..\KiwilandTests\KiwilandTests.csproj", "{386B9599-3EA2-457A-B764-4A83549AD2CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9F4630C-E176-40CD-91EC-92F1FDFD31FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9F4630C-E176-40CD-91EC-92F1FDFD31FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9F4630C-E176-40CD-91EC-92F1FDFD31FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9F4630C-E176-40CD-91EC-92F1FDFD31FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{386B9599-3EA2-457A-B764-4A83549AD2CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{386B9599-3EA2-457A-B764-4A83549AD2CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{386B9599-3EA2-457A-B764-4A83549AD2CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{386B9599-3EA2-457A-B764-4A83549AD2CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
