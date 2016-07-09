@@ -15,6 +15,7 @@ namespace KiwilandTests.Calculators
         [SetUp]
         public void SetUp()
         {
+            SetupTests();
             m_TripPermutationsCalculator = new TripPermutationsCalculator(m_StationProvider.Object);
         }
 

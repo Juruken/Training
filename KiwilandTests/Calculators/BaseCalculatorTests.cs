@@ -2,19 +2,16 @@
 using Kiwiland.Data;
 using Kiwiland.Processors;
 using Moq;
-using NUnit.Framework;
 
 namespace KiwilandTests.Calculators
 {
-    [TestFixture()]
     public class BaseCalculatorTests
     {
         protected Mock<IStationProvider> m_StationProvider;
         
         private Dictionary<string, Station> m_StationsByName;
 
-        [SetUp]
-        public void Setup()
+        protected void SetupTests()
         {
             SetupStations();
 

@@ -10,12 +10,17 @@ namespace KiwilandTests.Processors
     public class TripCalculatorTests : BaseCalculatorTests
     {
         private ITripCalculator m_TripCalculator;
+
+        [SetUp]
+        public void Setup()
+        {
+            SetupTests();
+            m_TripCalculator = new TripCalculator(m_StationProvider.Object);
+        }
         
         [Test]
         public void TestGetShortestTrip()
         {
-            m_TripCalculator = new TripCalculator(m_StationProvider.Object);
-
             var trip = m_TripCalculator.GetShortestTrip("C", "C");
 
             Assert.NotNull(trip);
@@ -25,17 +30,13 @@ namespace KiwilandTests.Processors
 
         [Test]
         public void TestFailToGetInvalidTrip()
-        {
-            m_TripCalculator = new TripCalculator(m_StationProvider.Object);
-            
+        {           
             Assert.That(() => m_TripCalculator.GetShortestTrip("C", "F"), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase("C", "C", 30, 2, "CEBC", 11)]
         public void TestGenerateTrips(string sourceStation, string destinationStation, int maximumDistance, int expectedTripCount, string expectedShortestTripName, int expectedDistance)
         {
-            m_TripCalculator = new TripCalculator(m_StationProvider.Object);
-
             var trips = m_TripCalculator.GetTrips(sourceStation, destinationStation, maximumDistance);
             
             Assert.NotNull(trips);
