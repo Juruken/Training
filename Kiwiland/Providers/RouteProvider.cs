@@ -18,7 +18,7 @@ namespace Kiwiland.Providers
         
         public List<Route> GetRoutes(string stationName)
         {
-            throw new System.NotImplementedException();
+            return m_RoutesByStationName.Value.ContainsKey(stationName) ? m_RoutesByStationName.Value[stationName] : null;
         }
 
         internal Dictionary<string, List<Route>> LoadRoutes()
@@ -27,7 +27,24 @@ namespace Kiwiland.Providers
 
             var data = m_RouteDataProvider.GetData();
 
-            // TODO: Create the Routes
+            foreach (var routeString in data)
+            {
+                var route = new Route()
+                {
+                    SourceStation = routeString.Substring(0, 1),
+                    DestinationStation = routeString.Substring(1, 1),
+                    Distance = int.Parse(routeString.Substring(2, 1))
+                };
+
+                if (routesByStationName.ContainsKey(route.SourceStation))
+                {
+                    routesByStationName[route.SourceStation].Add(route);
+                }
+                else
+                {
+                    routesByStationName.Add(route.SourceStation, new List<Route>() { route });
+                }
+            }
 
             return routesByStationName;
         }

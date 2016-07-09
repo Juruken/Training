@@ -19,28 +19,7 @@ namespace Kiwiland.Processors
             m_DataProvider = dataProvider;
             m_RouteProvider = routeProvider;
 
-            m_StationsByName = new Lazy<Dictionary<string, Station>>();
-        }
-
-        private Dictionary<string, Station> LoadStations()
-        {
-            var stations = new Dictionary<string, Station>();
-
-            var data = m_DataProvider.GetData();
-
-            foreach (var stationString in data)
-            {
-                /*if ()
-                {
-                    var station = CreateStationFromRoute(stationString);
-                }
-                else
-                {
-                    stations.Add();
-                }*/
-            }
-
-            return stations;
+            m_StationsByName = new Lazy<Dictionary<string, Station>>(LoadStations);
         }
 
         public Station GetStation(string stationName)
@@ -48,19 +27,31 @@ namespace Kiwiland.Processors
             return m_StationsByName.Value.ContainsKey(stationName) ? m_StationsByName.Value[stationName] : null;
         }
 
-        /// <summary>
-        /// Takes a Station in the format of a string. Expected format: <SourceStationInitial, DestinationStationInitial, Distance> e.g. AB1
-        /// </summary>
-        /// <param name="stationRoute"></param>
-        /// <returns></returns>
-        private Station CreateStationFromRoute(string stationRoute)
+        internal Dictionary<string, Station> LoadStations()
         {
-            if (stationRoute.Length != 3)
-            {
-                throw new ArgumentException("Invalid station data provided");
-            }
+            var data = m_DataProvider.GetData();
             
-            return new Station { Name = stationRoute.Substring(0, 1) };
+            return data.Select(CreateStation).ToDictionary(s => s.Name, s => s);
+        }
+
+        /// <summary>
+        /// Expects to get a Station in the form of a string, AB1
+        /// Where A is the station name, B is a destination station, and 1 is the distance between them.
+        /// </summary>
+        /// <param name="stationString"></param>
+        /// <returns></returns>
+        internal Station CreateStation(string stationString)
+        {
+            var stationName = stationString.Substring(0, 1);
+
+            var routes = m_RouteProvider.GetRoutes(stationName);
+            var routesByDestinationStationName = routes != null ? routes.ToDictionary(r => r.DestinationStation, r => r) : null;
+
+            return new Station()
+            {
+                Name = stationName,
+                Routes = routesByDestinationStationName
+            };
         }
     }
 }
