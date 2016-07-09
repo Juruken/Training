@@ -46,23 +46,26 @@
   <ItemGroup>
     <Compile Include="Data\Route.cs" />
     <Compile Include="Data\Station.cs" />
-    <Compile Include="Providers\FileProvider.cs" />
-    <Compile Include="Providers\IFileProvider.cs" />
+    <Compile Include="Processors\IStationDataProcessor.cs" />
+    <Compile Include="Processors\StationDataProcessor.cs" />
+    <Compile Include="Providers\FileDataDataProvider.cs" />
+    <Compile Include="Providers\IFileDataProvider.cs" />
     <Compile Include="Providers\IRouteDataProvider.cs" />
     <Compile Include="Providers\IStationDataProvider.cs" />
     <Compile Include="Providers\IRouteProvider.cs" />
     <Compile Include="Providers\IStationProvider.cs" />
     <Compile Include="Providers\RouteProvider.cs" />
+    <Compile Include="Providers\StationDataProvider.cs" />
     <Compile Include="Providers\StationProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validators\IStationDataValidator.cs" />
+    <Compile Include="Validators\StationDataValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Processors\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="TrainStations.txt" />
   </ItemGroup>

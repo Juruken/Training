@@ -62,9 +62,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Processors\StationDataProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\RouteProviderTests.cs" />
     <Compile Include="Providers\StationProviderTests.cs" />
+    <Compile Include="Validators\StationValidatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

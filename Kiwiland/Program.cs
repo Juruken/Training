@@ -21,8 +21,10 @@ namespace Kiwiland
             if (inputDelimeter == null || inputDelimeter.Length != 1)
                 throw new ConfigurationErrorsException("Invalid configuration, please specify character delimeter of input file.");
             
-            var fileProvider = new FileProvider(filePath, inputDelimeter[0]);
-            var fileContents = fileProvider.GetFileContents();
+            var fileProvider = new FileDataDataProvider(filePath);
+            var fileData = fileProvider.GetFileData();
+
+
 
             Console.WriteLine("Success");
         }

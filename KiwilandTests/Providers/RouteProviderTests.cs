@@ -33,7 +33,7 @@ namespace KiwilandTests.Providers
 
             Assert.AreEqual("A", route.SourceStation);
             Assert.AreEqual("B", route.DestinationStation);
-            Assert.AreEqual("1", route.Distance);
+            Assert.AreEqual(1, route.Distance);
         }
     }
 }

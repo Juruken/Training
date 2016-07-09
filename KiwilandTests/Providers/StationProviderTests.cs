@@ -16,7 +16,7 @@ namespace KiwilandTests.Providers
         [SetUp]
         public void SetUp()
         {
-            var stationData = new [] { "AB3" };
+            var stationData = new List<string> { "AB3" };
             var routes = new List<Route> { new Route { SourceStation = "A", DestinationStation = "B", Distance = 3} };
 
             var dataProvider = new Mock<IStationDataProvider>();
