@@ -62,9 +62,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Calculators\BaseCalculatorTests.cs" />
+    <Compile Include="Calculators\TripPermutationsCalculatorTests.cs" />
     <Compile Include="Processors\RouteDataProcessorTests.cs" />
     <Compile Include="Processors\StationDataProcessorTests.cs" />
-    <Compile Include="Processors\TripProcessorTests.cs" />
+    <Compile Include="Calculators\TripCalculatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\RouteProviderTests.cs" />
     <Compile Include="Providers\StationDataProviderTests.cs" />

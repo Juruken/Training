@@ -7,17 +7,17 @@ namespace Kiwiland.Managers
 {
     public class TripManager
     {
-        private readonly ITripProcessor m_TripProcessor;
+        private readonly ITripCalculator m_TripCalculator;
         
-        public TripManager(ITripProcessor tripProcessor, IStationProvider stationProvider, IRouteProvider routeProvider)
+        public TripManager(ITripCalculator tripCalculator, IStationProvider stationProvider, IRouteProvider routeProvider)
         {
-            m_TripProcessor = tripProcessor;
+            m_TripCalculator = tripCalculator;
         }
         
         public Trip GetFastestTrip(string sourceStation, string destinationStation, int distanceLimit)
         {
             Trip fastestTrip = null;
-            var generatedTrips = m_TripProcessor.Process(sourceStation, destinationStation, distanceLimit);
+            var generatedTrips = m_TripCalculator.GetTrips(sourceStation, destinationStation, distanceLimit);
 
             if (generatedTrips == null)
             {

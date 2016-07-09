@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Kiwiland.Data;
 using Kiwiland.Processors;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 
-namespace KiwilandTests.Processors
+namespace KiwilandTests.Calculators
 {
-    [TestFixture]
-    public class TripProcessorTests
+    [TestFixture()]
+    public class BaseCalculatorTests
     {
-        private ITripProcessor m_TripProcessor;
+        protected Mock<IStationProvider> m_StationProvider;
+        
         private Dictionary<string, Station> m_StationsByName;
 
         [SetUp]
@@ -19,32 +18,16 @@ namespace KiwilandTests.Processors
         {
             SetupStations();
 
-            var stationProvider = new Mock<IStationProvider>();
-            stationProvider.Setup(r => r.GetStation(It.IsAny<string>())).Returns((string s) => MockStationProvider(s));
-
-            m_TripProcessor = new TripProcessor(stationProvider.Object);
-        }
-
-        // CDC, CEBC, CEBCDC, CDCEBC, CDEBC, CEBCEBC, CEBCEBCEBC
-        [TestCase("C", "C", 30, 7, "CDC", 16)]
-        public void TestGenerateTrips(string sourceStation, string destinationStation, int maximumDistance, int expectedTripCount, string expectedShortestTripName, int expectedDistance)
-        {
-            var trips = m_TripProcessor.Process(sourceStation, destinationStation, maximumDistance);
-            
-            Assert.NotNull(trips);
-            Assert.AreEqual(expectedTripCount, trips.Count);
-
-            var shortestTrip = trips.OrderBy(t => t.TotalDistance).First();
-            Assert.AreEqual(expectedShortestTripName, shortestTrip.TripName);
-            Assert.AreEqual(expectedDistance, shortestTrip.TripName);
+            m_StationProvider = new Mock<IStationProvider>();
+            m_StationProvider.Setup(r => r.GetStation(It.IsAny<string>())).Returns((string s) => MockStationProvider(s));
         }
 
         private Station MockStationProvider(string stationName)
         {
-            return m_StationsByName[stationName];
+            return m_StationsByName.ContainsKey(stationName) ? m_StationsByName[stationName] : null;
         }
 
-        // AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7
+        // Test Routes: AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7
         private void SetupStations()
         {
             var stationARoutes = new Dictionary<string, Route>()
@@ -55,21 +38,18 @@ namespace KiwilandTests.Processors
                 {"E", new Route { SourceStation = "A", DestinationStation = "E", Distance = 7}}
             };
 
-            
             // BC4
             var stationBRoutes = new Dictionary<string, Route>()
             {
                 {"C", new Route { SourceStation = "B", DestinationStation = "C", Distance = 4}}
             };
             
-
             // CD8, CE2
             var stationCRoutes = new Dictionary<string, Route>()
             {
                 {"D", new Route { SourceStation = "C", DestinationStation = "D", Distance = 8}},
                 {"E", new Route { SourceStation = "C", DestinationStation = "E", Distance = 2}}
             };
-
             
             // DC8, DE6
             var stationDRoutes = new Dictionary<string, Route>()
@@ -81,7 +61,7 @@ namespace KiwilandTests.Processors
             // EB3 
             var stationERoutes = new Dictionary<string, Route>()
             {
-                {"C", new Route { SourceStation = "E", DestinationStation = "B", Distance = 3}}
+                {"B", new Route { SourceStation = "E", DestinationStation = "B", Distance = 3}}
             };
 
             var stationA = new Station { Name = "A", Routes = stationARoutes };
