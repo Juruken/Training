@@ -5,15 +5,15 @@ namespace TrainTrip.Providers
 {
     public class RouteDataProvider : IRouteDataProvider
     {
-        private readonly List<string> m_RawRouteData;
+        private readonly IDataProvider m_DataProvider;
         private readonly IRouteDataProcessor m_RouteDataProcessor;
 
         private readonly Lazy<List<string>> m_ProcessedRouteData;
 
-        public RouteDataProvider(IRouteDataProcessor processor, List<string> rawRouteData)
+        public RouteDataProvider(IDataProvider dataProvider, IRouteDataProcessor processor)
         {
             m_RouteDataProcessor = processor;
-            m_RawRouteData = rawRouteData;
+            m_DataProvider = dataProvider;
 
             m_ProcessedRouteData = new Lazy<List<string>>(LoadRouteData);
         }
@@ -29,7 +29,8 @@ namespace TrainTrip.Providers
 
         private List<string> LoadRouteData()
         {
-            return m_RouteDataProcessor.Process(m_RawRouteData);
+            var data = m_DataProvider.GetData();
+            return m_RouteDataProcessor.Process(data);
         }
     }
 }

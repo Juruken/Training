@@ -62,8 +62,8 @@
     <Compile Include="Processors\IStationDataProcessor.cs" />
     <Compile Include="Processors\StationDataProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\FileDataProvider.cs" />
-    <Compile Include="Providers\IFileDataProvider.cs" />
+    <Compile Include="Providers\DataProvider.cs" />
+    <Compile Include="Providers\IDataProvider.cs" />
     <Compile Include="Providers\IRouteDataProcessor.cs" />
     <Compile Include="Providers\IRouteDataProvider.cs" />
     <Compile Include="Providers\IRouteProvider.cs" />

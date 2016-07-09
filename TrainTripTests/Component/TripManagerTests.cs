@@ -18,8 +18,8 @@ namespace TrainTripTests.Component
         [SetUp]
         public void Setup()
         {
-            var fileDataProvider = new Mock<IFileDataProvider>();
-            fileDataProvider.Setup(r => r.GetFileData()).Returns(new List<string> { m_TestData });
+            var fileDataProvider = new Mock<IDataProvider>();
+            fileDataProvider.Setup(r => r.GetData()).Returns(new List<string> { m_TestData });
 
             var tripFactory = new TripFactory(',', fileDataProvider.Object);
             m_TripManager = tripFactory.CreateTripManager();

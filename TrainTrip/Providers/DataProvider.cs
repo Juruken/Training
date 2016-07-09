@@ -3,11 +3,11 @@ using System.IO;
 
 namespace TrainTrip.Providers
 {
-    public class FileDataProvider : IFileDataProvider
+    public class DataProvider : IDataProvider
     {
         private readonly string m_FilePath;
 
-        public FileDataProvider(string filePath)
+        public DataProvider(string filePath)
         {
             m_FilePath = filePath;
         }
@@ -16,7 +16,7 @@ namespace TrainTrip.Providers
         /// Returns a list of string lines from the file. Does NOT do any validation on the file contents.
         /// </summary>
         /// <returns></returns>
-        public List<string> GetFileData()
+        public List<string> GetData()
         {
             // TODO: Handle possible buffer overflow
             using (var reader = new StreamReader(m_FilePath))

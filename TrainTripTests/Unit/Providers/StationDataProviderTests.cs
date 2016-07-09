@@ -4,6 +4,7 @@ using TrainTrip.Processors;
 using TrainTrip.Providers;
 using Moq;
 using NUnit.Framework;
+using TrainTrip;
 
 namespace TrainTripTests.Providers
 {
@@ -26,7 +27,10 @@ namespace TrainTripTests.Providers
             var processor = new Mock<IStationDataProcessor>();
             processor.Setup(r => r.Process(It.IsAny<List<string>>())).Returns(processedFileData);
 
-            m_StationDataProvider = new StationDataProvider(processor.Object, new List<string>());
+            var dataProvider = new Mock<IDataProvider>();
+            dataProvider.Setup(r => r.GetData()).Returns(new List<string>());
+            
+            m_StationDataProvider = new StationDataProvider(dataProvider.Object, processor.Object);
         }
 
         [Test]
