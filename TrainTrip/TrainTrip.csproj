@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F2252AD7-A54E-4F4B-8D76-D04CE73EEA5B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TrainTrip</RootNamespace>
+    <AssemblyName>TrainTrip</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Calculators\IJourneyCalculator.cs" />
+    <Compile Include="Calculators\ITripDistanceCalculator.cs" />
+    <Compile Include="Calculators\ITripPermutationsCalculator.cs" />
+    <Compile Include="Calculators\ITripStopCalculator.cs" />
+    <Compile Include="Calculators\JourneyCalculator.cs" />
+    <Compile Include="Calculators\TripDistanceCalculator.cs" />
+    <Compile Include="Calculators\TripPermutationsCalculator.cs" />
+    <Compile Include="Calculators\TripStopCalculator.cs" />
+    <Compile Include="Data\Journey.cs" />
+    <Compile Include="Data\Route.cs" />
+    <Compile Include="Data\Station.cs" />
+    <Compile Include="Data\Trip.cs" />
+    <Compile Include="Exceptions\InvalidJourneyException.cs" />
+    <Compile Include="Exceptions\InvalidStationException.cs" />
+    <Compile Include="Exceptions\InvalidStationFormat.cs" />
+    <Compile Include="Exceptions\InvalidTripException.cs" />
+    <Compile Include="Factory\TripFactory.cs" />
+    <Compile Include="Managers\ITripManager.cs" />
+    <Compile Include="Managers\TripManager.cs" />
+    <Compile Include="Processors\IStationDataProcessor.cs" />
+    <Compile Include="Processors\StationDataProcessor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\FileDataProvider.cs" />
+    <Compile Include="Providers\IFileDataProvider.cs" />
+    <Compile Include="Providers\IRouteDataProcessor.cs" />
+    <Compile Include="Providers\IRouteDataProvider.cs" />
+    <Compile Include="Providers\IRouteProvider.cs" />
+    <Compile Include="Providers\IStationDataProvider.cs" />
+    <Compile Include="Providers\IStationProvider.cs" />
+    <Compile Include="Providers\RouteDataProcessor.cs" />
+    <Compile Include="Providers\RouteDataProvider.cs" />
+    <Compile Include="Providers\RouteProvider.cs" />
+    <Compile Include="Providers\StationDataProvider.cs" />
+    <Compile Include="Providers\StationProvider.cs" />
+    <Compile Include="Validators\IRouteDataValidator.cs" />
+    <Compile Include="Validators\IStationDataValidator.cs" />
+    <Compile Include="Validators\RouteDataValidator.cs" />
+    <Compile Include="Validators\StationDataValidator.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

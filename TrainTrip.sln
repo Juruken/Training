@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainTrip", "TrainTrip\TrainTrip.csproj", "{F2252AD7-A54E-4F4B-8D76-D04CE73EEA5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainTrip.App", "TrainTrip.App\TrainTrip.App.csproj", "{1F88BC49-0727-43B6-AE3D-B176CDA316CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainTripTests", "TrainTripTests\TrainTripTests.csproj", "{386B9599-3EA2-457A-B764-4A83549AD2CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F2252AD7-A54E-4F4B-8D76-D04CE73EEA5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2252AD7-A54E-4F4B-8D76-D04CE73EEA5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2252AD7-A54E-4F4B-8D76-D04CE73EEA5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2252AD7-A54E-4F4B-8D76-D04CE73EEA5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F88BC49-0727-43B6-AE3D-B176CDA316CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F88BC49-0727-43B6-AE3D-B176CDA316CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F88BC49-0727-43B6-AE3D-B176CDA316CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F88BC49-0727-43B6-AE3D-B176CDA316CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{386B9599-3EA2-457A-B764-4A83549AD2CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{386B9599-3EA2-457A-B764-4A83549AD2CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{386B9599-3EA2-457A-B764-4A83549AD2CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{386B9599-3EA2-457A-B764-4A83549AD2CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
