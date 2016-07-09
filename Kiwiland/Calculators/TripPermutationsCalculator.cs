@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Kiwiland.Data;
+using Kiwiland.Exceptions;
 using Kiwiland.Processors;
 
 namespace Kiwiland.Calculators
@@ -81,11 +82,11 @@ namespace Kiwiland.Calculators
         {
             var source = m_StationProvider.GetStation(sourceStation);
             if (source == null)
-                throw new ArgumentException("Invalid Source Station");
+                throw new InvalidStationException(sourceStation);
 
             var destination = m_StationProvider.GetStation(destinationStation);
             if (destination == null)
-                throw new ArgumentException("Invalid Destination Station");
+                throw new InvalidStationException(destinationStation);
         }
     }
 }

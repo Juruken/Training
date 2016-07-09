@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Kiwiland.Data;
+using Kiwiland.Exceptions;
 using Kiwiland.Processors;
 
 namespace Kiwiland.Calculators
@@ -42,7 +43,7 @@ namespace Kiwiland.Calculators
                 var trip = m_TripCalculator.GetShortestTrip(previousStation, stationName);
                 
                 if (trip == null)
-                    throw new ArgumentException(String.Format("No trip for: {0}, {1}.", previousStation, stationName));
+                    throw new InvalidTripException(String.Format("No trip for: {0}, {1}.", previousStation, stationName));
 
                 journey.Trips.Add(trip);
 
@@ -55,13 +56,13 @@ namespace Kiwiland.Calculators
         private void ValidatePlannedJourney(string[] stationNames)
         {
             if (stationNames.Length == 1)
-                throw new ArgumentException("Invalid journey plan.");
+                throw new InvalidJourneyException("Invalid journey plan.");
 
             foreach (var stationName in stationNames)
             {
                 var station = m_StationProvider.GetStation(stationName);
                 if (station == null)
-                    throw new ArgumentException(String.Format("{0} is an invalid Station name.", stationName));
+                    throw new InvalidStationException(String.Format("{0} is an invalid Station name.", stationName));
             }
         }
     }

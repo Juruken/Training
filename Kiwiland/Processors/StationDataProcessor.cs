@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Kiwiland.Exceptions;
 using Kiwiland.Validators;
 
 namespace Kiwiland.Processors
@@ -41,7 +41,7 @@ namespace Kiwiland.Processors
                 {
                     if (!m_StationDataValidator.Validate(station))
                     {
-                        throw new ArgumentException("Station Data contains invalid format");
+                        throw new InvalidStationFormat(station);
                     }
 
                     stations.Add(station);

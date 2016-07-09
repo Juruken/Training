@@ -13,11 +13,11 @@ namespace Kiwiland
         {
             var filePath = ConfigurationManager.AppSettings["InputFilePath"];
             if (!File.Exists(filePath))
-                throw new Exception("Invalid Input File Path: " + filePath);
+                throw new FileLoadException("Invalid input File path", filePath);
 
             var inputDelimeter = ConfigurationManager.AppSettings["InputFileDelimeter"];
             if (inputDelimeter == null || inputDelimeter.Length != 1)
-                throw new ConfigurationErrorsException("Invalid configuration, please specify character delimeter of input file.");
+                throw new ConfigurationErrorsException("Invalid Configuration, please specify character delimeter of input file.");
             
             var fileProvider = new FileDataDataProvider(filePath);
             var fileData = fileProvider.GetFileData();

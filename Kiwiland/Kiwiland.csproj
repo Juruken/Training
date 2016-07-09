@@ -52,6 +52,10 @@
     <Compile Include="Data\Trip.cs" />
     <Compile Include="Data\Route.cs" />
     <Compile Include="Data\Station.cs" />
+    <Compile Include="Exceptions\InvalidJourneyException.cs" />
+    <Compile Include="Exceptions\InvalidStationException.cs" />
+    <Compile Include="Exceptions\InvalidStationFormat.cs" />
+    <Compile Include="Exceptions\InvalidTripException.cs" />
     <Compile Include="Managers\TripManager.cs" />
     <Compile Include="Processors\IStationDataProcessor.cs" />
     <Compile Include="Calculators\ITripCalculator.cs" />
