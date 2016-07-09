@@ -44,10 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Trip.cs" />
     <Compile Include="Data\Route.cs" />
     <Compile Include="Data\Station.cs" />
+    <Compile Include="Managers\TripManager.cs" />
     <Compile Include="Processors\IStationDataProcessor.cs" />
+    <Compile Include="Processors\ITripProcessor.cs" />
     <Compile Include="Processors\StationDataProcessor.cs" />
+    <Compile Include="Processors\TripProcessor.cs" />
     <Compile Include="Providers\FileDataDataProvider.cs" />
     <Compile Include="Providers\IFileDataProvider.cs" />
     <Compile Include="Providers\IRouteDataProcessor.cs" />
