@@ -9,12 +9,12 @@ namespace Kiwiland.Calculators
     public class JourneyCalculator : IJourneyCalculator
     {
         private readonly IStationProvider m_StationProvider;
-        private readonly ITripCalculator m_TripCalculator;
+        private readonly ITripDistanceCalculator m_TripDistanceCalculator;
 
-        public JourneyCalculator(IStationProvider stationProvider, ITripCalculator tripCalculator)
+        public JourneyCalculator(IStationProvider stationProvider, ITripDistanceCalculator tripDistanceCalculator)
         {
             m_StationProvider = stationProvider;
-            m_TripCalculator = tripCalculator;
+            m_TripDistanceCalculator = tripDistanceCalculator;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Kiwiland.Calculators
                     continue;
                 }
 
-                var trip = m_TripCalculator.GetShortestTrip(previousStation, stationName);
+                var trip = m_TripDistanceCalculator.GetFastestTripByDistance(previousStation, stationName);
                 
                 if (trip == null)
                     throw new InvalidTripException(String.Format("No trip for: {0}, {1}.", previousStation, stationName));

@@ -21,8 +21,8 @@ namespace KiwilandTests.Calculators
 
             CreateTrips();
 
-            var tripCalculator = new Mock<ITripCalculator>();
-            tripCalculator.Setup(r => r.GetShortestTrip(It.IsAny<string>(), It.IsAny<string>())).Returns((string s, string t) => GetTrip(s, t));
+            var tripCalculator = new Mock<ITripDistanceCalculator>();
+            tripCalculator.Setup(r => r.GetFastestTripByDistance(It.IsAny<string>(), It.IsAny<string>())).Returns((string s, string t) => GetTrip(s, t));
             
             m_JourneyCalculator = new JourneyCalculator(m_StationProvider.Object, tripCalculator.Object);
         }

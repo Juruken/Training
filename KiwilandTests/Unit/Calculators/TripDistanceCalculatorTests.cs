@@ -7,21 +7,21 @@ using NUnit.Framework;
 namespace KiwilandTests.Processors
 {
     [TestFixture]
-    public class TripCalculatorTests : BaseCalculatorTests
+    public class TripDistanceCalculatorTests : BaseCalculatorTests
     {
-        private ITripCalculator m_TripCalculator;
+        private ITripDistanceCalculator m_TripDistanceCalculator;
 
         [SetUp]
         public void Setup()
         {
             SetupTests();
-            m_TripCalculator = new TripCalculator(m_StationProvider.Object);
+            m_TripDistanceCalculator = new TripDistanceDistanceCalculator(m_StationProvider.Object);
         }
         
         [Test]
         public void TestGetShortestTrip()
         {
-            var trip = m_TripCalculator.GetShortestTrip("C", "C");
+            var trip = m_TripDistanceCalculator.GetFastestTripByDistance("C", "C");
 
             Assert.NotNull(trip);
             Assert.AreEqual(11, trip.TotalDistance);
@@ -31,13 +31,13 @@ namespace KiwilandTests.Processors
         [Test]
         public void TestFailToGetInvalidTrip()
         {           
-            Assert.That(() => m_TripCalculator.GetShortestTrip("C", "F"), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => m_TripDistanceCalculator.GetFastestTripByDistance("C", "F"), Throws.TypeOf<ArgumentException>());
         }
 
         [TestCase("C", "C", 30, 2, "CEBC", 11)]
         public void TestGenerateTrips(string sourceStation, string destinationStation, int maximumDistance, int expectedTripCount, string expectedShortestTripName, int expectedDistance)
         {
-            var trips = m_TripCalculator.GetTrips(sourceStation, destinationStation, maximumDistance);
+            var trips = m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance);
             
             Assert.NotNull(trips);
             Assert.AreEqual(expectedTripCount, trips.Count);

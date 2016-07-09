@@ -45,9 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculators\IJourneyCalculator.cs" />
+    <Compile Include="Calculators\ITripStopCalculator.cs" />
     <Compile Include="Calculators\ITripPermutationsCalculator.cs" />
     <Compile Include="Calculators\JourneyCalculator.cs" />
     <Compile Include="Calculators\TripPermutationsCalculator.cs" />
+    <Compile Include="Calculators\TripStopCalculator.cs" />
     <Compile Include="Data\Journey.cs" />
     <Compile Include="Data\Trip.cs" />
     <Compile Include="Data\Route.cs" />
@@ -56,12 +58,14 @@
     <Compile Include="Exceptions\InvalidStationException.cs" />
     <Compile Include="Exceptions\InvalidStationFormat.cs" />
     <Compile Include="Exceptions\InvalidTripException.cs" />
+    <Compile Include="Factory\TripFactory.cs" />
+    <Compile Include="Managers\ITripManager.cs" />
     <Compile Include="Managers\TripManager.cs" />
     <Compile Include="Processors\IStationDataProcessor.cs" />
-    <Compile Include="Calculators\ITripCalculator.cs" />
+    <Compile Include="Calculators\ITripDistanceCalculator.cs" />
     <Compile Include="Processors\StationDataProcessor.cs" />
-    <Compile Include="Calculators\TripCalculator.cs" />
-    <Compile Include="Providers\FileDataDataProvider.cs" />
+    <Compile Include="Calculators\TripDistanceDistanceCalculator.cs" />
+    <Compile Include="Providers\FileDataProvider.cs" />
     <Compile Include="Providers\IFileDataProvider.cs" />
     <Compile Include="Providers\IRouteDataProcessor.cs" />
     <Compile Include="Providers\IRouteDataProvider.cs" />
@@ -85,7 +89,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="TrainStations.txt" />
+    <Content Include="TrainStations.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

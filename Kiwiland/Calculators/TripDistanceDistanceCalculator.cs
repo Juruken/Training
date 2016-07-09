@@ -9,7 +9,7 @@ namespace Kiwiland.Processors
     /// <summary>
     /// Responsible for calculating trips for a given source and destination location
     /// </summary>
-    public class TripCalculator : ITripCalculator
+    public class TripDistanceDistanceCalculator : ITripDistanceCalculator
     {
         // TODO: Make sure this doesn't eat up performance, pick a smaller default maximum?
         private const int DEFAULT_MAXIMUM_DISTANCE = 10000;
@@ -17,13 +17,13 @@ namespace Kiwiland.Processors
         private readonly IStationProvider m_StationProvider;
         private readonly Dictionary<Tuple<string, string>, List<Trip>> m_CalculatedTrips;
 
-        public TripCalculator(IStationProvider stationProvider)
+        public TripDistanceDistanceCalculator(IStationProvider stationProvider)
         {
             m_StationProvider = stationProvider;
             m_CalculatedTrips = new Dictionary<Tuple<string, string>, List<Trip>>();
         }
 
-        public Trip GetShortestTrip(string sourceStation, string destinationStation)
+        public Trip GetFastestTripByDistance(string sourceStation, string destinationStation)
         {
             ValidateStationsExist(sourceStation, destinationStation);
 
@@ -32,7 +32,7 @@ namespace Kiwiland.Processors
 
             if (!m_CalculatedTrips.ContainsKey(sourceDestinationKey))
             {
-                trips = GetTrips(sourceStation, destinationStation);
+                trips = GetTripsByDistance(sourceStation, destinationStation);
             }
             else
             {
@@ -43,7 +43,9 @@ namespace Kiwiland.Processors
             return trips.OrderBy(t => t.TotalDistance).FirstOrDefault();
         }
 
-        public List<Trip> GetTrips(string sourceStation, string destinationStation, int maximumDistance = DEFAULT_MAXIMUM_DISTANCE)
+        // TODO: 
+
+        public List<Trip> GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance = DEFAULT_MAXIMUM_DISTANCE)
         {
             ValidateStationsExist(sourceStation, destinationStation);
 
@@ -52,10 +54,10 @@ namespace Kiwiland.Processors
             if (m_CalculatedTrips.ContainsKey(sourceDestinationKey))
                 return m_CalculatedTrips[sourceDestinationKey];
             
-            return CalculateTrips(sourceStation, destinationStation, maximumDistance);
+            return CalculateTripsByDistance(sourceStation, destinationStation, maximumDistance);
         }
 
-        private List<Trip> CalculateTrips(string sourceStation, string destinationStation, int maximumDistance)
+        private List<Trip> CalculateTripsByDistance(string sourceStation, string destinationStation, int maximumDistance)
         {
             var trips = new List<Trip>();
             var sourceDestinationKey = new Tuple<string, string>(sourceStation, destinationStation);
