@@ -32,12 +32,17 @@ namespace TrainTrip.Managers
             return m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
         }
 
-
         public List<Trip> GetTripsByStops(string sourceStation, string destinationStation, int maximumStops)
         {
             return m_TripStopCalculator.GetTripsByStops(sourceStation, destinationStation, maximumStops);
         }
-        
+
+        public int GetCountOfTripsForStationsByStops(string sourceStation, string destinationStation, int maximumStops)
+        {
+            var trips = m_TripStopCalculator.GetTripsByStops(sourceStation, destinationStation, maximumStops);
+            return trips != null ? trips.Count : 0;
+        }
+
         public List<Trip> GetPermutations(string sourceStation, string destinationStation, int maximumDistance)
         {
             return m_TripPermutationsCalculator.GetPermutations(sourceStation, destinationStation, maximumDistance);

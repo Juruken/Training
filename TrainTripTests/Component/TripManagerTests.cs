@@ -88,7 +88,6 @@ namespace TrainTripTests.Component
             Assert.IsNull(trips);
         }
 
-
         [TestCase("C", "F", 5)]
         public void TestInvalidRouteThrowsException(string sourceStation, string destinationStation, int maximumStops)
         {
@@ -99,10 +98,9 @@ namespace TrainTripTests.Component
         [TestCase("A", "C", 4, 3)]
         public void TestGetTripsLessThanXStops(string sourceStation, string destinationStation, int maximumStops, int expectedResults)
         {
-            var trips = m_TripManager.GetTripsByStops(sourceStation, destinationStation, maximumStops);
+            var trips = m_TripManager.GetCountOfTripsForStationsByStops(sourceStation, destinationStation, maximumStops);
 
-            Assert.NotNull(trips);
-            Assert.AreEqual(expectedResults, trips.Count);
+            Assert.AreEqual(expectedResults, trips);
         }
 
         [TestCase("C", "C", 1)]

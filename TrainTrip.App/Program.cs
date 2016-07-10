@@ -8,6 +8,8 @@ namespace TrainTrip
 {
     class Program
     {
+        private const string EXIT_PROGRAM = "Exit";
+
         static void Main(string[] args)
         {
             var filePath = ConfigurationManager.AppSettings["InputFilePath"];
@@ -27,11 +29,17 @@ namespace TrainTrip
             
 
             // While input from console != Exit.
+            var input = Console.ReadLine();
+
+            while (input != "Exit")
+            {
+                
+            }
 
             // Fetch User Input
 
             // Validate User Input
-            
+
             // Get Data for User Input
 
             // Output to Console
