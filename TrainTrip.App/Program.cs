@@ -217,7 +217,6 @@ namespace TrainTrip.App
             return null;
         }
 
-        // TODO: Make this return true if the expected input type was valid
         private static bool IsExpectedInputValid(string input, InputType expectedInputType)
         {
             // Assume input is invalid by default
@@ -225,17 +224,15 @@ namespace TrainTrip.App
 
             switch (expectedInputType)
             {
-                // "The distance of a given route, expected format <StationName>-<StationName> e.g. A-B or A-B-C \n"
+                // 1. - 5. => GetJourney
+                // "The distance of a given route, expected format <StationName>-<StationName> e.g. A-B or A-B-C"
                 case InputType.GetJourney:
-                    break;
-                // "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops expected format: <StationName><StationName><int> e.g. CC3."
-                case InputType.GetRoutesByMaximumStops:
-                    break;
-                // "The number of trips starting at <StationName> e.g. A ending at <StationName> e.g C, with exactly <int> e.g. 3 stops."
-                case InputType.GetRoutesByExactStops:
-                    break;
+                // 8. && 9. => GetShortestRouteByDistance
                 // "The length of the shortest route (by distance) from <StationName> to <StationName>, expected format  <StationName>-<StationName> e.g. A-C"
                 case InputType.GetShortestRouteByDistance:
+                    if (!input.Contains("-"))
+                        break;
+
                     var stationNames = input.Split('-');
 
                     if (stationNames.Length < 2)
@@ -251,6 +248,10 @@ namespace TrainTrip.App
 
                     isValid = true;
                     break;
+                // 6. GetRoutesByMaximumStops
+                // "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops expected format: <StationName><StationName><int> e.g. CC3."
+                case InputType.GetRoutesByMaximumStops:
+                // 10. GetPermutations
                 // "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: e.g. CC30"
                 case InputType.GetPermutations:
                     if (input.Length < 3 || !char.IsLetter(input[0]) || !char.IsLetter(input[1]))
