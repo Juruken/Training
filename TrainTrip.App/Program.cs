@@ -52,17 +52,15 @@ namespace TrainTrip.App
 
             m_PromptTextByInputType.Add(InputType.Help, m_InitialUserPrompt);
 
-            // While input from console != Exit.
-            string input;
-
             Output(m_InitialUserPrompt);
 
-            do
+            // Loop until the user closes the program.
+            while (true)
             {
                 // Fetch User Input
                 // Get option 1,2,3 etc.
-                input = Console.ReadLine();
-                
+                var input = Console.ReadLine();
+
                 // Validate User Input
                 var inputType = ValidateInitialOptionInput(input);
 
@@ -82,14 +80,17 @@ namespace TrainTrip.App
 
                 input = Console.ReadLine();
 
+                if (input != null)
+                    input = input.ToUpper();
+
                 // Get Data for User Input
                 // m_InputValidator = tripFactory.GetInputValidator();
-                if (!IsExpectedInputValid(input, inputType))
+                while (!IsExpectedInputValid(input, inputType))
                 {
                     Output(m_PromptTextByInputType[InputType.InvalidInput]);
-                    continue;
+                    input = Console.ReadLine();
                 }
-
+                
                 string outputMessage;
                 try
                 {
@@ -106,7 +107,7 @@ namespace TrainTrip.App
                             break;
                         default:
                             outputMessage = UNKNOWN_ROUTE_MESSAGE;
-                        break;
+                            break;
                     }
                 }
                 catch (InvalidRouteException)
@@ -120,7 +121,10 @@ namespace TrainTrip.App
 
                 // Output to Console
                 Output(outputMessage);
-            } while (input != "Exit");
+
+                Output("\n");
+                Output("Please enter another number between 1 and 5.");
+            }
         }
         
         private static void Output(string output)
@@ -161,7 +165,7 @@ namespace TrainTrip.App
 
         private static void BuildInitialUserPrompt()
         {
-            m_InitialUserPrompt = "Please enter a number between 1 - 5 from the options below. \n";
+            m_InitialUserPrompt = "Please enter a number between 1 and 5 from the options below. You may also type 'help' to see this message again or 'exit' to close the program.\n";
 
             foreach (var key in m_InputToOutputMapping.Keys)
             {
