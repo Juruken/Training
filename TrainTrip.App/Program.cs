@@ -88,6 +88,7 @@ namespace TrainTrip.App
                 while (!IsExpectedInputValid(input, inputType))
                 {
                     Output(m_PromptTextByInputType[InputType.InvalidInput]);
+                    Output(m_PromptTextByInputType[inputType]);
                     input = Console.ReadLine();
                 }
                 
@@ -248,10 +249,8 @@ namespace TrainTrip.App
 
             switch (expectedInputType)
             {
-                // 1. - 5. => GetJourney
                 // "The distance of a given route, expected format <StationName>-<StationName> e.g. A-B or A-B-C"
                 case InputType.GetJourney:
-                // 8. && 9. => GetShortestRouteByDistance
                 // "The length of the shortest route (by distance) from <StationName> to <StationName>, expected format  <StationName>-<StationName> e.g. A-C"
                 case InputType.GetShortestRouteByDistance:
                     if (!input.Contains("-"))
@@ -272,10 +271,10 @@ namespace TrainTrip.App
 
                     isValid = true;
                     break;
-                // 6. GetRoutesByMaximumStops
                 // "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops expected format: <StationName><StationName><int> e.g. CC3."
                 case InputType.GetRoutesByMaximumStops:
-                // 10. GetPermutations
+                // "The number of trips starting at <StationName> ending at <StationName>, with exactly <int> stops (e.g. AC3)."
+                case InputType.GetRoutesByExactStops:
                 // "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: e.g. CC30"
                 case InputType.GetPermutations:
                     if (input.Length < 3 || !char.IsLetter(input[0]) || !char.IsLetter(input[1]))
@@ -286,6 +285,8 @@ namespace TrainTrip.App
 
                     isValid = int.TryParse(possibleNumber, out num);
                     break;
+                default:
+                    throw new Exception("Unknown input type");
             }
 
             return isValid;
