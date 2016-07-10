@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using TrainTrip.Calculators;
 using TrainTrip.DataModel;
 using TrainTrip.Processors;
@@ -7,15 +8,15 @@ namespace TrainTrip.Managers
 {
     public class TripManager : ITripManager
     {
-        private readonly ITripDistanceCalculator m_TripDistanceCalculator;
+        private readonly ITripDirectRouteDistanceCalculator m_TripDirectRouteDistanceCalculator;
         private readonly ITripPermutationsCalculator m_TripStopPermutationsCalculator;
         private readonly ITripPermutationsCalculator m_TripDistancePermutationsCalculator;
         private readonly IJourneyCalculator m_JourneyCalculator;
         
-        public TripManager(ITripDistanceCalculator tripDistanceCalculator, ITripPermutationsCalculator tripStopPermutationsCalculator,
+        public TripManager(ITripDirectRouteDistanceCalculator tripDirectRouteDistanceCalculator, ITripPermutationsCalculator tripStopPermutationsCalculator,
             ITripPermutationsCalculator tripDistancePermutationsCalculator, IJourneyCalculator journeyCalculator)
         {
-            m_TripDistanceCalculator = tripDistanceCalculator;
+            m_TripDirectRouteDistanceCalculator = tripDirectRouteDistanceCalculator;
             m_TripStopPermutationsCalculator = tripStopPermutationsCalculator;
             m_TripDistancePermutationsCalculator = tripDistancePermutationsCalculator;
             m_JourneyCalculator = journeyCalculator;
@@ -23,17 +24,11 @@ namespace TrainTrip.Managers
 
         // TODO: Delete anything not being used
         // TODO: Also WRAP everything that needs to be wrapped...
-        public Trip GetShortestRouteByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
+        public Trip GetDirectRouteByLowestDistance(string sourceStation, string destinationStation)
         {
-            return m_TripDistanceCalculator.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+            return m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistance(sourceStation, destinationStation);
         }
-
-        public int GetRoutesByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
-        {
-            var trips = m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
-            return trips != null ? trips.Count : 0;
-        }
-
+        
         public int GetRoutesByMaximumStops(string sourceStation, string destinationStation, int maximumStops)
         {
             var trips = m_TripStopPermutationsCalculator.GetPermutations(sourceStation, destinationStation, maximumStops);
@@ -58,9 +53,9 @@ namespace TrainTrip.Managers
             return trips != null ? trips.Count : 0;
         }
 
-        public Journey GetJourney(string[] stations, int maximumDistance, bool directRouteOnly)
+        public Journey GetJourney(string[] stations)
         {
-            return m_JourneyCalculator.GetJourneyByRoutes(stations, maximumDistance, directRouteOnly);
+            return m_JourneyCalculator.GetJourneyByRoutes(stations);
         }
     }
 }

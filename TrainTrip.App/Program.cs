@@ -144,8 +144,6 @@ namespace TrainTrip.App
                 { "3", InputType.GetRoutesByExactStops },
                 { "4", InputType.GetShortestRouteByDistance },
                 { "5", InputType.GetPermutationsByDistance },
-                // TODO: Print available Routes?
-                // TODO: Print available Stations?
                 { "help", InputType.Help },
                 { "exit", InputType.Exit }
             };
@@ -189,15 +187,13 @@ namespace TrainTrip.App
 
             if (inputType == InputType.GetJourneyDistance)
             {
-                // TODO: Refactor out maxDistance.
-                var journey = tripManager.GetJourney(stations, 1000, true);
+                var journey = tripManager.GetJourney(stations);
                 return journey != null ? journey.Distance.ToString() : UNKNOWN_ROUTE_MESSAGE;
             }
 
             if (inputType == InputType.GetShortestRouteByDistance)
             {
-                // TODO: Refactor out maxDistance.
-                var trip = tripManager.GetShortestRouteByDistance(stations[0], stations[1], 1000, true);
+                var trip = tripManager.GetDirectRouteByLowestDistance(stations[0], stations[1]);
                 return trip != null ? trip.TotalDistance.ToString() : UNKNOWN_ROUTE_MESSAGE;
             }
 

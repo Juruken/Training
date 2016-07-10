@@ -22,9 +22,9 @@ namespace TrainTripTests.Calculators
 
             CreateTrips();
 
-            var tripCalculator = new Mock<ITripDistanceCalculator>();
-            tripCalculator.Setup(r => r.GetFastestTripByDistance(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>()))
-                .Returns((string s, string t, int i, bool b) => GetTrip(s, t));
+            var tripCalculator = new Mock<ITripDirectRouteDistanceCalculator>();
+            tripCalculator.Setup(r => r.GetDirectRouteByLowestDistance(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns((string s, string t) => GetTrip(s, t));
             
             m_JourneyCalculator = new JourneyCalculator(m_StationProvider.Object, tripCalculator.Object);
         }
@@ -34,7 +34,7 @@ namespace TrainTripTests.Calculators
         {
             // A - B - C
             var stations = new[] {"A", "B", "C"};
-            var journey = m_JourneyCalculator.GetJourneyByRoutes(stations, 1000, true);
+            var journey = m_JourneyCalculator.GetJourneyByRoutes(stations);
 
             Assert.NotNull(journey);
             Assert.AreEqual(9, journey.Distance);
@@ -45,7 +45,7 @@ namespace TrainTripTests.Calculators
         {
             var stations = new[] { "A", "E", "D" };
 
-            Assert.That(() => m_JourneyCalculator.GetJourneyByRoutes(stations, 1000, true), Throws.TypeOf<InvalidRouteException>());
+            Assert.That(() => m_JourneyCalculator.GetJourneyByRoutes(stations), Throws.TypeOf<InvalidTripException>());
         }
 
         private Trip GetTrip(string sourceStation, string destinationStation)

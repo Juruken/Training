@@ -9,19 +9,19 @@ namespace TrainTripTests.Processors
     [TestFixture]
     public class TripDistanceCalculatorTests : BaseCalculatorTests
     {
-        private ITripDistanceCalculator m_TripDistanceCalculator;
+        private ITripDirectRouteDistanceCalculator m_TripDirectRouteDistanceCalculator;
 
         [SetUp]
         public void Setup()
         {
             SetupTests();
-            m_TripDistanceCalculator = new TripDistanceCalculator(m_StationProvider.Object);
+            m_TripDirectRouteDistanceCalculator = new TripDirectRouteDistanceCalculator(m_StationProvider.Object);
         }
         
         [Test]
         public void TestGetShortestTrip()
         {
-            var trip = m_TripDistanceCalculator.GetFastestTripByDistance("C", "C", 30, false);
+            var trip = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistance("C", "C");
 
             Assert.NotNull(trip);
             Assert.AreEqual(11, trip.TotalDistance);
@@ -31,46 +31,42 @@ namespace TrainTripTests.Processors
         [Test]
         public void TestFailInvalidStationName()
         {           
-            Assert.That(() => m_TripDistanceCalculator.GetFastestTripByDistance("C", "F", 30, true), Throws.TypeOf<InvalidStationException>());
+            Assert.That(() => m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistance("C", "F"), Throws.TypeOf<InvalidStationException>());
         }
 
-        [TestCase("A", "D", 30, true, "AD", 5)]
-        public void TestGetDirectRoute(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly, string expectedName, int expectedDistance)
+        [TestCase("A", "D", "AD", 5)]
+        public void TestGetDirectRoute(string sourceStation, string destinationStation, string expectedName, int expectedDistance)
         {
-            var trip = m_TripDistanceCalculator.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+            var trip = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistance(sourceStation, destinationStation);
 
             Assert.NotNull(trip);
             Assert.AreEqual(expectedDistance, trip.TotalDistance);
             Assert.AreEqual(expectedName, trip.TripName);
         }
         
-        [TestCase("C", "C", 30, false, 2, "CEBC", 11)]
-        public void TestGetNonDirectTrip(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly,
-            int expectedTripCount, string expectedShortestTripName, int expectedDistance)
+        [TestCase("C", "C", "CEBC", 11)]
+        public void TestGetNonDirectTrip(string sourceStation, string destinationStation, string expectedShortestTripName, int expectedDistance)
         {
-            var trips = m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+            var trip = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistance(sourceStation, destinationStation);
             
-            Assert.NotNull(trips);
-            Assert.AreEqual(expectedTripCount, trips.Count);
-            
-            var shortestTrip = trips.OrderBy(t => t.TotalDistance).First();
-            Assert.AreEqual(expectedShortestTripName, shortestTrip.TripName);
-            Assert.AreEqual(expectedDistance, shortestTrip.TotalDistance);
+            Assert.NotNull(trip);
+            Assert.AreEqual(expectedShortestTripName, trip.TripName);
+            Assert.AreEqual(expectedDistance, trip.TotalDistance);
         }
 
-        [TestCase("A", "C", 30, true)]
-        [TestCase("C", "C", 30, true)]
-        public void TestFailDirectRoute(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
+        [TestCase("A", "C")]
+        [TestCase("C", "C")]
+        public void TestFailDirectRoute(string sourceStation, string destinationStation)
         {
-            var trips = m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+            var trip = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistance(sourceStation, destinationStation);
 
-            Assert.IsNull(trips);
+            Assert.IsNull(trip);
         }
 
-        [TestCase("C", "C", 1, false)]
-        public void TestFailMaximumDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
+        [TestCase("C", "C")]
+        public void TestFailMaximumDistance(string sourceStation, string destinationStation)
         {
-            var trips = m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+            var trips = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistance(sourceStation, destinationStation);
 
             Assert.IsNull(trips); 
         }

@@ -6,15 +6,19 @@ using TrainTrip.Processors;
 
 namespace TrainTrip.Calculators
 {
+    /// <summary>
+    /// Calculates the distance of specified series of trips if they exist.
+    /// e.g. A-B-C.
+    /// </summary>
     public class JourneyCalculator : IJourneyCalculator
     {
         private readonly IStationProvider m_StationProvider;
-        private readonly ITripDistanceCalculator m_TripDistanceCalculator;
+        private readonly ITripDirectRouteDistanceCalculator m_TripDirectRouteDistanceCalculator;
 
-        public JourneyCalculator(IStationProvider stationProvider, ITripDistanceCalculator tripDistanceCalculator)
+        public JourneyCalculator(IStationProvider stationProvider, ITripDirectRouteDistanceCalculator tripDirectRouteDistanceCalculator)
         {
             m_StationProvider = stationProvider;
-            m_TripDistanceCalculator = tripDistanceCalculator;
+            m_TripDirectRouteDistanceCalculator = tripDirectRouteDistanceCalculator;
         }
 
         /// <summary>
@@ -23,7 +27,7 @@ namespace TrainTrip.Calculators
         /// <param name="plannedJourney"></param>
         /// <param name="directRouteOnly"></param>
         /// <returns></returns>
-        public Journey GetJourneyByRoutes(string[] plannedJourney, int maximumDistance, bool directRouteOnly)
+        public Journey GetJourneyByRoutes(string[] plannedJourney)
         {
             ValidatePlannedJourney(plannedJourney);
 
@@ -41,15 +45,11 @@ namespace TrainTrip.Calculators
                     continue;
                 }
                 
-                var trip = m_TripDistanceCalculator.GetFastestTripByDistance(previousStation, stationName, maximumDistance, directRouteOnly);
+                var trip = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistance(previousStation, stationName);
 
                 if (trip == null)
                 {
-                    var errorMessage = String.Format("No trip for: {0}, {1}.", previousStation, stationName);
-                    if (directRouteOnly)
-                        throw new InvalidRouteException(errorMessage);
-
-                    throw new InvalidTripException(errorMessage);
+                    throw new InvalidTripException(String.Format("No trip for: {0}, {1}.", previousStation, stationName));
                 }
 
                 journey.Trips.Add(trip);

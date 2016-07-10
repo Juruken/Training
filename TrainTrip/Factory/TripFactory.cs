@@ -31,7 +31,7 @@ namespace TrainTrip.Factory
 
             var stationProvider = new StationProvider(stationDataProvider, routeProvider);
 
-            var tripDistanceCalculator = new TripDistanceCalculator(stationProvider);
+            var tripDistanceCalculator = new TripDirectRouteDistanceCalculator(stationProvider);
             var tripPermutationsCalculator = new TripDistancePermutationsCalculator(stationProvider);
             var journeyCalculator = new JourneyCalculator(stationProvider, tripDistanceCalculator);
 

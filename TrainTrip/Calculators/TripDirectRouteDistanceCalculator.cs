@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TrainTrip.DataModel;
 using TrainTrip.Exceptions;
@@ -11,27 +10,27 @@ namespace TrainTrip.Processors
     /// </summary>
     // TODO: Refactor all Calculators to implement a BaseTripCalculator, so we have a protected m_StationProvider
     // TODO: and a single validate stations exist function
-    public class TripDistanceCalculator : ITripDistanceCalculator
+    public class TripDirectRouteDistanceCalculator : ITripDirectRouteDistanceCalculator
     {
         private readonly IStationProvider m_StationProvider;
         private readonly Dictionary<string, List<Trip>> m_CalculatedTrips;
 
-        public TripDistanceCalculator(IStationProvider stationProvider)
+        public TripDirectRouteDistanceCalculator(IStationProvider stationProvider)
         {
             m_StationProvider = stationProvider;
             m_CalculatedTrips = new Dictionary<string, List<Trip>>();
         }
 
-        public Trip GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRoutesOnly)
+        public Trip GetDirectRouteByLowestDistance(string sourceStation, string destinationStation)
         {
             ValidateStationsExist(sourceStation, destinationStation);
             
             List<Trip> trips;
-            var sourceDestinationKey = sourceStation + destinationStation + maximumDistance + directRoutesOnly;
+            var sourceDestinationKey = sourceStation + destinationStation;
 
             if (!m_CalculatedTrips.ContainsKey(sourceDestinationKey))
             {
-                trips = GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRoutesOnly);
+                trips = GetDirectRoutesTripsByDistance(sourceStation, destinationStation);
             }
             else
             {
@@ -42,16 +41,16 @@ namespace TrainTrip.Processors
             return trips != null ? trips.OrderBy(t => t.TotalDistance).FirstOrDefault() : null;
         }
         
-        public List<Trip> GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRoutesOnly)
+        private List<Trip> GetDirectRoutesTripsByDistance(string sourceStation, string destinationStation)
         {
             ValidateStationsExist(sourceStation, destinationStation);
 
-            var sourceDestinationKey = sourceStation + destinationStation + maximumDistance + directRoutesOnly;
+            var sourceDestinationKey = sourceStation + destinationStation;
 
             if (m_CalculatedTrips.ContainsKey(sourceDestinationKey))
                 return m_CalculatedTrips[sourceDestinationKey];
             
-            return CalculateTripsByDistance(sourceStation, destinationStation, maximumDistance, directRoutesOnly);
+            return CalculateTripsByDistance(sourceStation, destinationStation);
         }
 
         /// <summary>
@@ -66,10 +65,10 @@ namespace TrainTrip.Processors
         /// <param name="maximumDistance"></param>
         /// <param name="directRoutesOnly"></param>
         /// <returns></returns>
-        private List<Trip> CalculateTripsByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRoutesOnly)
+        private List<Trip> CalculateTripsByDistance(string sourceStation, string destinationStation)
         {
             List<Trip> trips = null;
-            var sourceDestinationKey = sourceStation + destinationStation + maximumDistance + directRoutesOnly;
+            var sourceDestinationKey = sourceStation + destinationStation;
             var source = m_StationProvider.GetStation(sourceStation);
 
             // Loop of each route to see if they can get to our required destination.
@@ -80,16 +79,7 @@ namespace TrainTrip.Processors
                 {
                     trip = route.ConvertToTrip();
                 }
-                else if (!directRoutesOnly)
-                {
-                    trip = GenerateTrip(route.Distance, maximumDistance, route.DestinationStation, destinationStation);
-
-                    if (trip == null)
-                        continue;
-
-                    trip.TripName = sourceStation + trip.TripName;
-                }
-
+                
                 if (trip == null)
                     continue;
 
@@ -102,42 +92,6 @@ namespace TrainTrip.Processors
             m_CalculatedTrips.Add(sourceDestinationKey, trips);
 
             return trips;
-        }
-
-        private Trip GenerateTrip(int currentDistance, int maximumDistance, string currentStation, string destinationStation)
-        {
-            if (currentDistance > maximumDistance)
-                return null;
-            
-            var current = m_StationProvider.GetStation(currentStation);
-            var destination = m_StationProvider.GetStation(destinationStation);
-
-            if (current.Routes.ContainsKey(destination.Name)
-                && current.Routes[destination.Name].Distance + currentDistance < maximumDistance)
-            {
-                var trip = new Trip
-                {
-                    TotalDistance = currentDistance + current.Routes[destination.Name].Distance,
-                    TripName = currentStation + current.Routes[destination.Name].DestinationStation
-                };
-
-                return trip;
-            }
-
-            foreach (var route in current.Routes.Values)
-            {
-                var potentialTrip = GenerateTrip(currentDistance + route.Distance, maximumDistance, route.DestinationStation, destinationStation);
-
-                if (potentialTrip == null || potentialTrip.TotalDistance >= maximumDistance)
-                    continue;
-
-                potentialTrip.TotalDistance += currentDistance;
-                potentialTrip.TripName = currentStation + potentialTrip.TripName;
-
-                return potentialTrip;
-            }
-
-            return null;
         }
 
         private void ValidateStationsExist(string sourceStation, string destinationStation)

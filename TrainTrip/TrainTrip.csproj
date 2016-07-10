@@ -41,10 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculators\IJourneyCalculator.cs" />
-    <Compile Include="Calculators\ITripDistanceCalculator.cs" />
+    <Compile Include="Calculators\ITripDirectRouteDistanceCalculator.cs" />
     <Compile Include="Calculators\ITripPermutationsCalculator.cs" />
     <Compile Include="Calculators\JourneyCalculator.cs" />
-    <Compile Include="Calculators\TripDistanceCalculator.cs" />
+    <Compile Include="Calculators\TripDirectRouteDistanceCalculator.cs" />
     <Compile Include="Calculators\TripPermutationsByStopsCalculator.cs" />
     <Compile Include="Calculators\TripPermutationsByDistanceCalculator.cs" />
     <Compile Include="DataModel\Journey.cs" />
