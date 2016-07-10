@@ -57,6 +57,7 @@
     <Compile Include="Exceptions\InvalidStationException.cs" />
     <Compile Include="Exceptions\InvalidStationFormat.cs" />
     <Compile Include="Exceptions\InvalidTripException.cs" />
+    <Compile Include="Exceptions\TrainTripException.cs" />
     <Compile Include="Factory\TripFactory.cs" />
     <Compile Include="Managers\ITripManager.cs" />
     <Compile Include="Managers\TripManager.cs" />

@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace TrainTrip.Exceptions
+﻿namespace TrainTrip.Exceptions
 {
-    public class InvalidRouteException : Exception
+    public class InvalidRouteException : TrainTripException
     {
         public InvalidRouteException(string routes) : base(routes + " is not a valid route")
         {

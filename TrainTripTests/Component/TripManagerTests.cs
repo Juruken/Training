@@ -31,7 +31,7 @@ namespace TrainTripTests.Component
         public void GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly,
                                             int expectedDistance, string expectedName)
         {
-            var trip = m_TripManager.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+            var trip = m_TripManager.GetShortestRouteByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
 
             Assert.NotNull(trip);
             Assert.AreEqual(expectedDistance, trip.TotalDistance);
@@ -41,7 +41,7 @@ namespace TrainTripTests.Component
         [TestCase("A", "D", 30, true, "AD", 5)]
         public void TestGetDirectRoute(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly, string expectedName, int expectedDistance)
         {
-            var trip = m_TripManager.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+            var trip = m_TripManager.GetShortestRouteByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
 
             Assert.NotNull(trip);
             Assert.AreEqual(expectedDistance, trip.TotalDistance);
@@ -91,7 +91,7 @@ namespace TrainTripTests.Component
         [TestCase("C", "F", 5)]
         public void TestInvalidRouteThrowsException(string sourceStation, string destinationStation, int maximumStops)
         {
-            Assert.That(() => m_TripManager.GetTripsByStops(sourceStation, destinationStation, maximumStops), Throws.TypeOf<InvalidStationException>());
+            Assert.That(() => m_TripManager.GetTripsByMaximumStops(sourceStation, destinationStation, maximumStops), Throws.TypeOf<InvalidStationException>());
         }
 
         [TestCase("C", "C", 3, 2)]
@@ -107,7 +107,7 @@ namespace TrainTripTests.Component
         [TestCase("A", "C", 1)]
         public void TestFailGetTripsLessThanXStops(string sourceStation, string destinationStation, int stopLimit)
         {
-            var trips = m_TripManager.GetTripsByStops(sourceStation, destinationStation, stopLimit);
+            var trips = m_TripManager.GetTripsByMaximumStops(sourceStation, destinationStation, stopLimit);
 
             Assert.Null(trips);
         }

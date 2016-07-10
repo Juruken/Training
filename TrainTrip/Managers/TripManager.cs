@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using TrainTrip.Calculators;
 using TrainTrip.DataModel;
 using TrainTrip.Exceptions;
@@ -22,7 +23,9 @@ namespace TrainTrip.Managers
             m_JourneyCalculator = journeyCalculator;
         }
 
-        public Trip GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
+        // TODO: Delete anything not being used
+
+        public Trip GetShortestRouteByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
         {
             return m_TripDistanceCalculator.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
         }
@@ -32,7 +35,7 @@ namespace TrainTrip.Managers
             return m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
         }
 
-        public List<Trip> GetTripsByStops(string sourceStation, string destinationStation, int maximumStops)
+        public List<Trip> GetTripsByMaximumStops(string sourceStation, string destinationStation, int maximumStops)
         {
             return m_TripStopCalculator.GetTripsByStops(sourceStation, destinationStation, maximumStops);
         }
@@ -41,6 +44,12 @@ namespace TrainTrip.Managers
         {
             var trips = m_TripStopCalculator.GetTripsByStops(sourceStation, destinationStation, maximumStops);
             return trips != null ? trips.Count : 0;
+        }
+
+        public int GetCountOfTripsByExactStops(string sourceStation, string destinationStation, int exactStops)
+        {
+            var trips = m_TripStopCalculator.GetTripsByStops(sourceStation, destinationStation, exactStops);
+            return trips != null ? trips.Count(t => t.TotalStops == exactStops) : 0;
         }
 
         public List<Trip> GetPermutations(string sourceStation, string destinationStation, int maximumDistance)

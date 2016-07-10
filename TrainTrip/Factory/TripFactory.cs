@@ -20,9 +20,6 @@ namespace TrainTrip.Factory
         
         public ITripManager CreateTripManager()
         {
-            var fileData = m_DataProvider.GetData();
-            // TODO: Add a FileContents Validator? Isn't that what the stationDataProcessor and routeDataProcessors are for?!
-
             var routeDataValidator = new RouteDataValidator();
             var routeDataProcessor = new RouteDataProcessor(routeDataValidator, m_FileDelimiter);
             var routeDataProvider = new RouteDataProvider(m_DataProvider, routeDataProcessor);
