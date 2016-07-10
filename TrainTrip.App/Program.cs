@@ -49,7 +49,9 @@ namespace TrainTrip.App
             // m_PromptTextByInputType = tripFactory.GetPromptTextByInputType();
             BuildPromptText();
             BuildInitialUserPrompt();
-            
+
+            m_PromptTextByInputType.Add(InputType.Help, m_InitialUserPrompt);
+
             // While input from console != Exit.
             string input;
 
@@ -150,18 +152,24 @@ namespace TrainTrip.App
                 { InputType.GetShortestRouteByDistance, "The length of the shortest route (by distance) from <StationName> to <StationName>, expected format  <StationName>-<StationName> (e.g. A-C)." },
                 { InputType.GetPermutations, "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: (e.g. CC30)."},
                 { InputType.InvalidInput, "Invalid input, please try again." },
-                { InputType.Help, m_InitialUserPrompt }
             };
         }
 
         private static void BuildInitialUserPrompt()
         {
-            m_InitialUserPrompt = "Please enter a number between 1 - 6 from the options below. \n";
+            m_InitialUserPrompt = "Please enter a number between 1 - 5 from the options below. \n";
 
             foreach (var key in m_InputToOutputMapping.Keys)
             {
                 var inputType = m_InputToOutputMapping[key];
-                m_InitialUserPrompt += key + ". " + m_PromptTextByInputType[inputType];
+
+                // Help and exit should NOT be part of the initial user prompt.
+                if (inputType == InputType.Help || inputType == InputType.Exit)
+                {
+                    continue; ;
+                }
+
+                m_InitialUserPrompt += key + ". " + m_PromptTextByInputType[inputType] + "\n";
             }
         }
 
