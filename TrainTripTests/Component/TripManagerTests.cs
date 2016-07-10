@@ -30,7 +30,7 @@ namespace TrainTripTests.Component
         [TestCase("A","C", 4, 3)]
         public void TestGetCountOfRoutesByExactStops(string sourceStation, string destinationStation, int exactStops, int expectedResults)
         {
-            var countOfMatchingTrips = m_TripManager.GetCountOfRoutesByExactStops(sourceStation, destinationStation, exactStops);
+            var countOfMatchingTrips = m_TripManager.GetExactTripPermutationsCountByStops(sourceStation, destinationStation, exactStops);
 
             Assert.NotNull(countOfMatchingTrips);
             Assert.AreEqual(expectedResults, countOfMatchingTrips);
@@ -57,44 +57,39 @@ namespace TrainTripTests.Component
             Assert.AreEqual(expectedName, trip.TripName);
         }
 
-        [TestCase("C", "C", 30, false, 2, "CEBC", 11)]
-        public void TestGetNonDirectTrip(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly,
-            int expectedTripCount, string expectedShortestTripName, int expectedDistance)
+        [TestCase("C", "C", 30, false, 2)]
+        public void TestGetNonDirectTrip(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly, int expectedTripCount)
         {
-            var trips = m_TripManager.GetRoutesByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+            var count = m_TripManager.GetRoutesByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
 
-            Assert.NotNull(trips);
-            Assert.AreEqual(expectedTripCount, trips.Count);
-
-            var shortestTrip = trips.OrderBy(t => t.TotalDistance).First();
-            Assert.AreEqual(expectedShortestTripName, shortestTrip.TripName);
-            Assert.AreEqual(expectedDistance, shortestTrip.TotalDistance);
+            Assert.NotNull(count);
+            Assert.AreEqual(expectedTripCount, count);
         }
 
         [TestCase("C", "C", 30, 7)]
         public void GetPermutations(string sourceStation, string destinationStation, int maximumDistance, int expectedResult)
         {
-            var result = m_TripManager.GetPermutations(sourceStation, destinationStation, maximumDistance);
+            var count = m_TripManager.GetTripPermutationsCountByDistance(sourceStation, destinationStation, maximumDistance);
 
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedResult, result.Count);
+            Assert.NotNull(count);
+            Assert.AreEqual(expectedResult, count);
         }
 
         [TestCase("A", "C", 30, true)]
         [TestCase("C", "C", 30, true)]
-        public void TestFailDirectRoute(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
+        public void TestZeroDirectRouteResults(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
         {
             var trips = m_TripManager.GetRoutesByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
 
-            Assert.IsNull(trips);
+            Assert.AreEqual(0, trips);
         }
 
         [TestCase("C", "C", 1, false)]
-        public void TestFailMaximumDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
+        public void TestZeroMaximumDistanceResults(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
         {
             var trips = m_TripManager.GetRoutesByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
 
-            Assert.IsNull(trips);
+            Assert.AreEqual(0, trips);
         }
 
         [TestCase("C", "F", 5)]
@@ -107,18 +102,18 @@ namespace TrainTripTests.Component
         [TestCase("A", "C", 4, 6)]
         public void TestGetTripsLessThanXStops(string sourceStation, string destinationStation, int maximumStops, int expectedResults)
         {
-            var trips = m_TripManager.GetCountOfRoutesForStationsByStops(sourceStation, destinationStation, maximumStops);
+            var trips = m_TripManager.GetTripPermutationsCountByStops(sourceStation, destinationStation, maximumStops);
 
             Assert.AreEqual(expectedResults, trips);
         }
 
         [TestCase("C", "C", 1)]
         [TestCase("A", "C", 1)]
-        public void TestFailGetTripsLessThanXStops(string sourceStation, string destinationStation, int stopLimit)
+        public void TestZeroTripsByMaxmimumStops(string sourceStation, string destinationStation, int stopLimit)
         {
-            var trips = m_TripManager.GetRoutesByMaximumStops(sourceStation, destinationStation, stopLimit);
+            var count = m_TripManager.GetRoutesByMaximumStops(sourceStation, destinationStation, stopLimit);
 
-            Assert.Null(trips);
+            Assert.AreEqual(0, count);
         }
 
         [Test, TestCaseSource(typeof(TestDataProvider), "GetJourneyDirectRouteCases")]

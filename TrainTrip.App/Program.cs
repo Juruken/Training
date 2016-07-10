@@ -17,11 +17,11 @@ namespace TrainTrip.App
             InvalidInput,
             Help,
             Exit,
-            GetJourney,
+            GetJourneyDistance,
             GetRoutesByMaximumStops,
             GetRoutesByExactStops,
             GetShortestRouteByDistance,
-            GetPermutations
+            GetPermutationsByDistance
         }
 
         private static string UNKNOWN_ROUTE_MESSAGE = "NO SUCH ROUTE";
@@ -98,13 +98,13 @@ namespace TrainTrip.App
                     // If something is wrong with the input, we expect TrainTrip library to throw an exception.
                     switch (inputType)
                     {
-                        case InputType.GetJourney:
+                        case InputType.GetJourneyDistance:
                         case InputType.GetShortestRouteByDistance:
                             outputMessage = ExecuteGetJourneyDistanceOrShortestRoute(input, inputType, tripManager);
                             break;
                         case InputType.GetRoutesByExactStops:
                         case InputType.GetRoutesByMaximumStops:
-                        case InputType.GetPermutations:
+                        case InputType.GetPermutationsByDistance:
                             outputMessage = ExecuteGetRoutesByExactStopsOrMaximumStopsOrGetPermutations(input, inputType, tripManager);
                             break;
                         default:
@@ -139,11 +139,11 @@ namespace TrainTrip.App
         {
             m_InputToOutputMapping = new Dictionary<string, InputType>
             {
-                { "1", InputType.GetJourney },
+                { "1", InputType.GetJourneyDistance },
                 { "2", InputType.GetRoutesByMaximumStops },
                 { "3", InputType.GetRoutesByExactStops },
                 { "4", InputType.GetShortestRouteByDistance },
-                { "5", InputType.GetPermutations },
+                { "5", InputType.GetPermutationsByDistance },
                 // TODO: Print available Routes?
                 // TODO: Print available Stations?
                 { "help", InputType.Help },
@@ -156,11 +156,11 @@ namespace TrainTrip.App
         {
             m_PromptTextByInputType = new Dictionary<InputType, string>
             {
-                { InputType.GetJourney, "The distance of a given route, expected format <StationName>-<StationName> (e.g. A-B or A-B-C)." },
+                { InputType.GetJourneyDistance, "The distance of a given route, expected format <StationName>-<StationName> (e.g. A-B or A-B-C)." },
                 { InputType.GetRoutesByMaximumStops, "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops, expected format: <StationName><StationName><MaximumStops> e.g. CC3." },
                 { InputType.GetRoutesByExactStops, "The number of trips starting at <StationName> ending at <StationName>, with exactly <int> stops (e.g. AC4)." },
                 { InputType.GetShortestRouteByDistance, "The length of the shortest route (by distance) from <StationName> to <StationName>, expected format  <StationName>-<StationName> (e.g. A-C)." },
-                { InputType.GetPermutations, "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: (e.g. CC30)."},
+                { InputType.GetPermutationsByDistance, "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: (e.g. CC30)."},
                 { InputType.InvalidInput, "Invalid input, please try again." },
             };
         }
@@ -187,10 +187,9 @@ namespace TrainTrip.App
         {
             string[] stations = input.Split('-');
 
-            if (inputType == InputType.GetJourney)
+            if (inputType == InputType.GetJourneyDistance)
             {
                 // TODO: Refactor out maxDistance.
-                // TODO: Wrap this
                 var journey = tripManager.GetJourney(stations, 1000, true);
                 return journey != null ? journey.Distance.ToString() : UNKNOWN_ROUTE_MESSAGE;
             }
@@ -198,7 +197,6 @@ namespace TrainTrip.App
             if (inputType == InputType.GetShortestRouteByDistance)
             {
                 // TODO: Refactor out maxDistance.
-                // TODO: Wrap this
                 var trip = tripManager.GetShortestRouteByDistance(stations[0], stations[1], 1000, true);
                 return trip != null ? trip.TotalDistance.ToString() : UNKNOWN_ROUTE_MESSAGE;
             }
@@ -214,19 +212,17 @@ namespace TrainTrip.App
 
             if (inputType == InputType.GetRoutesByMaximumStops)
             {
-                var permutations = tripManager.GetRoutesByMaximumStops(sourceStation, destinationStation, maximumDistance);
-                return permutations != null ? permutations.Count.ToString() : UNKNOWN_ROUTE_MESSAGE;
+                return tripManager.GetRoutesByMaximumStops(sourceStation, destinationStation, maximumDistance).ToString();
             }
 
             if (inputType == InputType.GetRoutesByExactStops)
             {
-                return tripManager.GetCountOfRoutesByExactStops(sourceStation, destinationStation, maximumDistance).ToString();
+                return tripManager.GetExactTripPermutationsCountByStops(sourceStation, destinationStation, maximumDistance).ToString();
             }
 
-            if (inputType == InputType.GetPermutations)
+            if (inputType == InputType.GetPermutationsByDistance)
             {
-                var permutations = tripManager.GetPermutations(sourceStation, destinationStation, maximumDistance);
-                return permutations != null ? permutations.Count.ToString() : UNKNOWN_ROUTE_MESSAGE;
+                return tripManager.GetTripPermutationsCountByDistance(sourceStation, destinationStation, maximumDistance).ToString();
             }
 
             throw new Exception("Unexpected Input Type");
@@ -256,7 +252,7 @@ namespace TrainTrip.App
             switch (expectedInputType)
             {
                 // "The distance of a given route, expected format <StationName>-<StationName> e.g. A-B or A-B-C"
-                case InputType.GetJourney:
+                case InputType.GetJourneyDistance:
                 // "The length of the shortest route (by distance) from <StationName> to <StationName>, expected format  <StationName>-<StationName> e.g. A-C"
                 case InputType.GetShortestRouteByDistance:
                     if (!input.Contains("-"))
@@ -282,7 +278,7 @@ namespace TrainTrip.App
                 // "The number of trips starting at <StationName> ending at <StationName>, with exactly <int> stops (e.g. AC4)."
                 case InputType.GetRoutesByExactStops:
                 // "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: e.g. CC30"
-                case InputType.GetPermutations:
+                case InputType.GetPermutationsByDistance:
                     if (input.Length < 3 || !char.IsLetter(input[0]) || !char.IsLetter(input[1]))
                         break;
 
