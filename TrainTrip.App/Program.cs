@@ -23,8 +23,9 @@ namespace TrainTrip.App
             GetPermutations
         }
 
+        private static string UNKNOWN_ROUTE_MESSAGE = "NO SUCH ROUTE";
         private static string m_InitialUserPrompt;
-        private static Dictionary<string, InputType> m_InputToOutput;
+        private static Dictionary<string, InputType> m_InputToOutputMapping;
         private static Dictionary<InputType, string> m_PromptTextByInputType;
 
         // TODO: Write tests for this? 
@@ -75,29 +76,43 @@ namespace TrainTrip.App
                 }
 
                 // Get Data for User Input
+                // m_InputValidator = tripFactory.GetInputValidator();
                 if (!IsExpectedInputValid(input, inputType))
                 {
                     Output(m_PromptTextByInputType[InputType.Help]);
                     continue;
                 }
 
-                string result;
+                string outputMessage;
                 try
                 {
                     // If something is wrong with the input, we expect TrainTrip library to throw an exception.
-                    result = Execute(input, inputType, tripManager);
+                    switch (inputType)
+                    {
+                        case InputType.GetJourney:
+                        case InputType.GetShortestRouteByDistance:
+                            outputMessage = ExecuteGetJourneyDistanceOrShortestRoute(input, inputType, tripManager);
+                            break;
+                        case InputType.GetRoutesByMaximumStops:
+                        case InputType.GetPermutations:
+                            outputMessage = ExecuteGetRoutesByMaximumStopsOrGetPermutations(input, inputType, tripManager);
+                            break;
+                        default:
+                            outputMessage = UNKNOWN_ROUTE_MESSAGE;
+                        break;
+                    }
                 }
                 catch (InvalidRouteException)
                 {
-                    result = "NO SUCH ROUTE";
+                    outputMessage = UNKNOWN_ROUTE_MESSAGE;
                 }
                 catch (TrainTripException ex)
                 {
-                    result = ex.Message;
+                    outputMessage = ex.Message;
                 }
 
                 // Output to Console
-                Output(result);
+                Output(outputMessage);
             } while (input != "Exit");
         }
 
@@ -110,8 +125,8 @@ namespace TrainTrip.App
 
             inputString = inputString.ToLower();
 
-            if (m_InputToOutput.ContainsKey(inputString))
-                return m_InputToOutput[inputString];
+            if (m_InputToOutputMapping.ContainsKey(inputString))
+                return m_InputToOutputMapping[inputString];
 
             // If we don't know what it is, assume it is invalid.
             return InputType.InvalidInput;
@@ -124,7 +139,8 @@ namespace TrainTrip.App
 
         private static void BuildOptions()
         {
-            m_InputToOutput = new Dictionary<string, InputType>
+            // m_InputToOutputMapping = tripFactory.GetInputToOutputMapping();
+            m_InputToOutputMapping = new Dictionary<string, InputType>
             {
                 { "1", InputType.GetJourney },
                 { "2", InputType.GetRoutesByMaximumStops },
@@ -141,28 +157,16 @@ namespace TrainTrip.App
         // TODO: Move this to the factory!
         private static void BuildPromptText()
         {
+            // m_PromptTextByInputType = tripFactory.GetPromptTextByInputType();
             m_PromptTextByInputType = new Dictionary<InputType, string>
             {
-                // 1. GetJourney
-                // 2. GetJourney
-                // 3. GetJourney
-                // 4. GetJourney
-                // 5. GetJourney
-                // 6. GetRoutesByMaximumStops
-                // 7. GetRoutesByExactStops
-                // 8. GetShortestRouteByDistance
-                // 9. GetShortestRouteByDistance
-                // 10. GetPermutations
-
-                { InputType.GetJourney, "The distance of a given route, expected format <StationName>-<StationName> e.g. A-B or A-B-C \n" },
-                { InputType.GetRoutesByMaximumStops, "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops expected format: <StationName><StationName><int> e.g. CC3." },
-                { InputType.GetRoutesByExactStops, "The number of trips starting at <StationName> e.g. A ending at <StationName> e.g C, with exactly <int> e.g. 3 stops." },
-                { InputType.GetShortestRouteByDistance, "The length of the shortest route (by distance) from <StationName> to <StationName>, expected format  <StationName>-<StationName> e.g. A-C" },
-                { InputType.GetPermutations, "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: e.g. CC30"},
-                
-                { InputType.InvalidInput, "Invalid input, please try again. \n" },
+                { InputType.GetJourney, "The distance of a given route, expected format <StationName>-<StationName> (e.g. A-B or A-B-C)." },
+                { InputType.GetRoutesByMaximumStops, "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops expected format: <StationName><StationName><MaximumStops> e.g. CC3." },
+                { InputType.GetRoutesByExactStops, "The number of trips starting at <StationName> ending at <StationName>, with exactly <int> stops (e.g. AC3)." },
+                { InputType.GetShortestRouteByDistance, "The length of the shortest route (by distance) from <StationName> to <StationName>, expected format  <StationName>-<StationName> (e.g. A-C)." },
+                { InputType.GetPermutations, "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: (e.g. CC30)."},
+                { InputType.InvalidInput, "Invalid input, please try again." },
                 { InputType.Help, m_InitialUserPrompt }
-                // TODO: What about exit?
             };
         }
 
@@ -170,51 +174,54 @@ namespace TrainTrip.App
         {
             m_InitialUserPrompt = "Please enter a number between 1 - 6 from the options below. \n";
 
-            foreach (var key in m_InputToOutput.Keys)
+            foreach (var key in m_InputToOutputMapping.Keys)
             {
-                var inputType = m_InputToOutput[key];
+                var inputType = m_InputToOutputMapping[key];
                 m_InitialUserPrompt += key + ". " + m_PromptTextByInputType[inputType];
             }
         }
 
-        private static string Execute(string input, InputType inputType, ITripManager tripManager)
+        private static string ExecuteGetJourneyDistanceOrShortestRoute(string input, InputType inputType, ITripManager tripManager)
         {
-            // 1. GetJourney
-            // 2. GetJourney
-            // 3. GetJourney
-            // 4. GetJourney
-            // 5. GetJourney
-            // 6. GetRoutesByMaximumStops
-            // 7. GetRoutesByExactStops
-            // 8. GetShortestRouteByDistance
-            // 9. GetShortestRouteByDistance
-            // 10. GetPermutations
+            string[] stations = input.Split('-');
 
-            /*{ InputType.GetJourney, "The distance of a given route, expected format <StationName>-<StationName> e.g. A-B or A-B-C \n" },
-            { InputType.GetRoutesByMaximumStops, "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops expected format: <StationName><StationName><int> e.g. CC3." },
-            { InputType.GetRoutesByExactStops, "The number of trips starting at <StationName> e.g. A ending at <StationName> e.g C, with exactly <int> e.g. 3 stops." },
-            { InputType.GetShortestRouteByDistance, "The length of the shortest route (by distance) from <StationName> to <StationName>, expected format  <StationName>-<StationName> e.g. A-C" },
-            { InputType.GetPermutations, "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: e.g. CC30"},*/
-
-            // TODO: Deal with this... /sigh.
-            switch (inputType)
+            if (inputType == InputType.GetJourney)
             {
-                case InputType.GetJourney:
-                    break;
-                case InputType.GetRoutesByMaximumStops:
-                    break;
-                case InputType.GetRoutesByExactStops:
-                    break;
-                case InputType.GetShortestRouteByDistance:
-                    break;
-                case InputType.GetPermutations:
-                    break;
-                default:
-                    return m_PromptTextByInputType[InputType.InvalidInput];
+                // TODO: Refactor out maxDistance.
+                // TODO: Wrap this
+                var journey = tripManager.GetJourney(stations, 1000, true);
+                return journey != null ? journey.Distance.ToString() : UNKNOWN_ROUTE_MESSAGE;
             }
-            
-            // TODO: Delete this
-            return null;
+
+            if (inputType == InputType.GetShortestRouteByDistance)
+            {
+                // TODO: Refactor out maxDistance.
+                // TODO: Wrap this
+                var trip = tripManager.GetShortestRouteByDistance(stations[0], stations[1], 1000, true);
+                return trip != null ? trip.TotalDistance.ToString() : UNKNOWN_ROUTE_MESSAGE;
+            }
+
+            throw new Exception("Unexpected Input Type");
+        }
+
+        private static string ExecuteGetRoutesByMaximumStopsOrGetPermutations(string input, InputType inputType, ITripManager tripManager)
+        {
+            string sourceStation = input.Substring(0, 1);
+            string destinationStation = input.Substring(1, 1);
+            int maximumDistance = int.Parse(input.Substring(2, 1));
+
+            if (inputType == InputType.GetRoutesByMaximumStops)
+            {
+                var permutations = tripManager.GetRoutesByMaximumStops(sourceStation, destinationStation, maximumDistance);
+                return permutations != null ? permutations.Count.ToString() : UNKNOWN_ROUTE_MESSAGE;
+            }
+            else if (inputType == InputType.GetPermutations)
+            {
+                var permutations = tripManager.GetPermutations(sourceStation, destinationStation, maximumDistance);
+                return permutations != null ? permutations.Count.ToString() : UNKNOWN_ROUTE_MESSAGE;
+            }
+
+            throw new Exception("Unexpected Input Type");
         }
 
         private static bool IsExpectedInputValid(string input, InputType expectedInputType)

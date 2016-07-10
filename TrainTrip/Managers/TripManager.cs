@@ -30,23 +30,23 @@ namespace TrainTrip.Managers
             return m_TripDistanceCalculator.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
         }
 
-        public List<Trip> GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
+        public List<Trip> GetRoutesByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
         {
             return m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
         }
 
-        public List<Trip> GetTripsByMaximumStops(string sourceStation, string destinationStation, int maximumStops)
+        public List<Trip> GetRoutesByMaximumStops(string sourceStation, string destinationStation, int maximumStops)
         {
             return m_TripStopCalculator.GetTripsByStops(sourceStation, destinationStation, maximumStops);
         }
 
-        public int GetCountOfTripsForStationsByStops(string sourceStation, string destinationStation, int maximumStops)
+        public int GetCountOfRoutesForStationsByStops(string sourceStation, string destinationStation, int maximumStops)
         {
             var trips = m_TripStopCalculator.GetTripsByStops(sourceStation, destinationStation, maximumStops);
             return trips != null ? trips.Count : 0;
         }
 
-        public int GetCountOfTripsByExactStops(string sourceStation, string destinationStation, int exactStops)
+        public int GetCountOfRoutesByExactStops(string sourceStation, string destinationStation, int exactStops)
         {
             var trips = m_TripStopCalculator.GetTripsByStops(sourceStation, destinationStation, exactStops);
             return trips != null ? trips.Count(t => t.TotalStops == exactStops) : 0;
