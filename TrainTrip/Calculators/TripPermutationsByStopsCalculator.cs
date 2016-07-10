@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TrainTrip.DataModel;
 using TrainTrip.Exceptions;
@@ -7,32 +6,32 @@ using TrainTrip.Processors;
 
 namespace TrainTrip.Calculators
 {
-    public class TripPermutationsCalculator : ITripPermutationsCalculator
+    public class TripDistancePermutationsCalculator : ITripPermutationsCalculator
     {
         private readonly IStationProvider m_StationProvider;
-        private readonly Dictionary<Tuple<string,string>, List<Trip>> m_TripsBySourceAndDestination;
+        private readonly Dictionary<string, List<Trip>> m_TripsBySourceAndDestination;
         
-        public TripPermutationsCalculator(IStationProvider stationProvider)
+        public TripDistancePermutationsCalculator(IStationProvider stationProvider)
         {
             m_StationProvider = stationProvider;
-            m_TripsBySourceAndDestination = new Dictionary<Tuple<string, string>, List<Trip>>();
+            m_TripsBySourceAndDestination = new Dictionary<string, List<Trip>>();
         }
 
-        public List<Trip> GetPermutations(string sourceStation, string destinationStation, int maximumDistance)
+        public List<Trip> GetPermutations(string sourceStation, string destinationStation, int maximum)
         {
-            var sourceDestinationKey = new Tuple<string, string>(sourceStation, destinationStation);
+            var sourceDestinationKey = sourceStation + destinationStation + maximum;
 
             if (m_TripsBySourceAndDestination.ContainsKey(sourceDestinationKey))
                 return m_TripsBySourceAndDestination[sourceDestinationKey];
 
-            return CalculatePermutations(sourceStation, destinationStation, maximumDistance);
+            return CalculatePermutations(sourceStation, destinationStation, maximum);
         }
 
-        private List<Trip> CalculatePermutations(string sourceStation, string destinationStation, int maximumDistance)
+        private List<Trip> CalculatePermutations(string sourceStation, string destinationStation, int maximum)
         {
             ValidateStationsExist(sourceStation, destinationStation);
 
-            var sourceDestinationKey = new Tuple<string, string>(sourceStation, destinationStation);
+            var sourceDestinationKey = sourceStation + destinationStation + maximum;
             var source = m_StationProvider.GetStation(sourceStation);
 
             var tripsByTripName = new Dictionary<string, Trip>();
@@ -41,8 +40,11 @@ namespace TrainTrip.Calculators
             {
                 var trip = route.ConvertToTrip();
 
-                GeneratorTrip(tripsByTripName, trip, maximumDistance, route.DestinationStation, destinationStation);
+                GeneratorTrip(tripsByTripName, trip, maximum, route.DestinationStation, destinationStation);
             }
+
+            if (tripsByTripName.Values.Count == 0)
+                return null;
 
             var result = tripsByTripName.Values.ToList();
 
@@ -51,9 +53,9 @@ namespace TrainTrip.Calculators
             return result;
         }
 
-        private void GeneratorTrip(Dictionary<string, Trip> tripsByTripName, Trip currentTrip, int maximumDistance, string currentStation, string destinationStation)
+        private void GeneratorTrip(Dictionary<string, Trip> tripsByTripName, Trip currentTrip, int maximum, string currentStation, string destinationStation)
         {
-            if (currentTrip.TotalDistance > maximumDistance)
+            if (currentTrip.TotalDistance > maximum)
                 return;
 
             var current = m_StationProvider.GetStation(currentStation);
@@ -64,13 +66,13 @@ namespace TrainTrip.Calculators
                 newTrip.TotalDistance += route.Distance;
                 newTrip.TripName += route.DestinationStation;
                 
-                if (newTrip.TotalDistance >= maximumDistance)
+                if (newTrip.TotalDistance >= maximum)
                     continue;
                 
                 if (newTrip.TripName.EndsWith(destinationStation) && !tripsByTripName.ContainsKey(newTrip.TripName))
                     tripsByTripName.Add(newTrip.TripName, newTrip.Clone());
 
-                GeneratorTrip(tripsByTripName, newTrip.Clone(), maximumDistance, route.DestinationStation, destinationStation);
+                GeneratorTrip(tripsByTripName, newTrip.Clone(), maximum, route.DestinationStation, destinationStation);
             }
         }
 

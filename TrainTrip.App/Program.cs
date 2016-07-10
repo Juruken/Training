@@ -102,9 +102,10 @@ namespace TrainTrip.App
                         case InputType.GetShortestRouteByDistance:
                             outputMessage = ExecuteGetJourneyDistanceOrShortestRoute(input, inputType, tripManager);
                             break;
+                        case InputType.GetRoutesByExactStops:
                         case InputType.GetRoutesByMaximumStops:
                         case InputType.GetPermutations:
-                            outputMessage = ExecuteGetRoutesByMaximumStopsOrGetPermutations(input, inputType, tripManager);
+                            outputMessage = ExecuteGetRoutesByExactStopsOrMaximumStopsOrGetPermutations(input, inputType, tripManager);
                             break;
                         default:
                             outputMessage = UNKNOWN_ROUTE_MESSAGE;
@@ -156,8 +157,8 @@ namespace TrainTrip.App
             m_PromptTextByInputType = new Dictionary<InputType, string>
             {
                 { InputType.GetJourney, "The distance of a given route, expected format <StationName>-<StationName> (e.g. A-B or A-B-C)." },
-                { InputType.GetRoutesByMaximumStops, "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops expected format: <StationName><StationName><MaximumStops> e.g. CC3." },
-                { InputType.GetRoutesByExactStops, "The number of trips starting at <StationName> ending at <StationName>, with exactly <int> stops (e.g. AC3)." },
+                { InputType.GetRoutesByMaximumStops, "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops, expected format: <StationName><StationName><MaximumStops> e.g. CC3." },
+                { InputType.GetRoutesByExactStops, "The number of trips starting at <StationName> ending at <StationName>, with exactly <int> stops (e.g. AC4)." },
                 { InputType.GetShortestRouteByDistance, "The length of the shortest route (by distance) from <StationName> to <StationName>, expected format  <StationName>-<StationName> (e.g. A-C)." },
                 { InputType.GetPermutations, "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: (e.g. CC30)."},
                 { InputType.InvalidInput, "Invalid input, please try again." },
@@ -205,16 +206,21 @@ namespace TrainTrip.App
             throw new Exception("Unexpected Input Type");
         }
 
-        private static string ExecuteGetRoutesByMaximumStopsOrGetPermutations(string input, InputType inputType, ITripManager tripManager)
+        private static string ExecuteGetRoutesByExactStopsOrMaximumStopsOrGetPermutations(string input, InputType inputType, ITripManager tripManager)
         {
-            string sourceStation = input.Substring(0, 1);
-            string destinationStation = input.Substring(1, 1);
-            int maximumDistance = int.Parse(input.Substring(2, 1));
+            string sourceStation = input[0].ToString();
+            string destinationStation = input[1].ToString();
+            int maximumDistance = int.Parse(input.Substring(2));
 
             if (inputType == InputType.GetRoutesByMaximumStops)
             {
                 var permutations = tripManager.GetRoutesByMaximumStops(sourceStation, destinationStation, maximumDistance);
                 return permutations != null ? permutations.Count.ToString() : UNKNOWN_ROUTE_MESSAGE;
+            }
+
+            if (inputType == InputType.GetRoutesByExactStops)
+            {
+                return tripManager.GetCountOfRoutesByExactStops(sourceStation, destinationStation, maximumDistance).ToString();
             }
 
             if (inputType == InputType.GetPermutations)
@@ -273,7 +279,7 @@ namespace TrainTrip.App
                     break;
                 // "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops expected format: <StationName><StationName><int> e.g. CC3."
                 case InputType.GetRoutesByMaximumStops:
-                // "The number of trips starting at <StationName> ending at <StationName>, with exactly <int> stops (e.g. AC3)."
+                // "The number of trips starting at <StationName> ending at <StationName>, with exactly <int> stops (e.g. AC4)."
                 case InputType.GetRoutesByExactStops:
                 // "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: e.g. CC30"
                 case InputType.GetPermutations:

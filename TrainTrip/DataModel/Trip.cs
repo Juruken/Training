@@ -9,7 +9,7 @@
         {
             get
             {
-                return TripName != null ? TripName.Length : 0;
+                return TripName != null ? TripName.Length - 1 : 0;
             }
         }
         

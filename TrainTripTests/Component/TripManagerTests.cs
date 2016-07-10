@@ -26,7 +26,16 @@ namespace TrainTripTests.Component
             var tripFactory = new TripFactory(',', fileDataProvider.Object);
             m_TripManager = tripFactory.CreateTripManager();
         }
-        
+
+        [TestCase("A","C", 4, 3)]
+        public void TestGetCountOfRoutesByExactStops(string sourceStation, string destinationStation, int exactStops, int expectedResults)
+        {
+            var countOfMatchingTrips = m_TripManager.GetCountOfRoutesByExactStops(sourceStation, destinationStation, exactStops);
+
+            Assert.NotNull(countOfMatchingTrips);
+            Assert.AreEqual(expectedResults, countOfMatchingTrips);
+        }
+
         [TestCase("C", "C", 30, false, 11, "CEBC")]
         public void GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly,
                                             int expectedDistance, string expectedName)
@@ -95,7 +104,7 @@ namespace TrainTripTests.Component
         }
 
         [TestCase("C", "C", 3, 2)]
-        [TestCase("A", "C", 4, 3)]
+        [TestCase("A", "C", 4, 6)]
         public void TestGetTripsLessThanXStops(string sourceStation, string destinationStation, int maximumStops, int expectedResults)
         {
             var trips = m_TripManager.GetCountOfRoutesForStationsByStops(sourceStation, destinationStation, maximumStops);

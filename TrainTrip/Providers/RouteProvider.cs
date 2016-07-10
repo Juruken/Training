@@ -31,9 +31,9 @@ namespace TrainTrip.Providers
             {
                 var route = new Route()
                 {
-                    SourceStation = routeString.Substring(0, 1),
-                    DestinationStation = routeString.Substring(1, 1),
-                    Distance = int.Parse(routeString.Substring(2, 1))
+                    SourceStation = routeString[0].ToString(),
+                    DestinationStation = routeString[1].ToString(),
+                    Distance = int.Parse(routeString.Substring(2))
                 };
 
                 if (routesByStationName.ContainsKey(route.SourceStation))

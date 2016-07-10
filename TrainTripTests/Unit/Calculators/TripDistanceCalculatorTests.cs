@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using TrainTrip.Exceptions;
 using TrainTrip.Processors;
 using NUnit.Framework;

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TrainTrip.Calculators;
-using TrainTrip.Processors;
-using Moq;
 using NUnit.Framework;
 
 namespace TrainTripTests.Calculators
@@ -17,7 +15,26 @@ namespace TrainTripTests.Calculators
         public void SetUp()
         {
             SetupTests();
-            m_TripPermutationsCalculator = new TripPermutationsCalculator(m_StationProvider.Object);
+            m_TripPermutationsCalculator = new TripDistancePermutationsCalculator(m_StationProvider.Object);
+        }
+
+        [Test]
+        public void TestChangingMaxDistance()
+        {
+            var trips = m_TripPermutationsCalculator.GetPermutations("C", "C", 55);
+
+            Assert.NotNull(trips);
+            Assert.AreEqual(57, trips.Count);
+
+            trips = m_TripPermutationsCalculator.GetPermutations("C", "C", 50);
+
+            Assert.NotNull(trips);
+            Assert.AreEqual(39, trips.Count);
+
+            trips = m_TripPermutationsCalculator.GetPermutations("C", "C", 55);
+
+            Assert.NotNull(trips);
+            Assert.AreEqual(57, trips.Count);
         }
 
         // Total Permutations for permutations calculator

@@ -5,6 +5,6 @@ namespace TrainTrip.Calculators
 {
     public interface ITripPermutationsCalculator
     {
-        List<Trip> GetPermutations(string sourceStation, string destinationStation, int maximumDistance);
+        List<Trip> GetPermutations(string sourceStation, string destinationStation, int maximum);
     }
 }

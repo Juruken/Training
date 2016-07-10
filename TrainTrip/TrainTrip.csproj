@@ -43,11 +43,10 @@
     <Compile Include="Calculators\IJourneyCalculator.cs" />
     <Compile Include="Calculators\ITripDistanceCalculator.cs" />
     <Compile Include="Calculators\ITripPermutationsCalculator.cs" />
-    <Compile Include="Calculators\ITripStopCalculator.cs" />
     <Compile Include="Calculators\JourneyCalculator.cs" />
     <Compile Include="Calculators\TripDistanceCalculator.cs" />
-    <Compile Include="Calculators\TripPermutationsCalculator.cs" />
-    <Compile Include="Calculators\TripStopCalculator.cs" />
+    <Compile Include="Calculators\TripPermutationsByStopsCalculator.cs" />
+    <Compile Include="Calculators\TripPermutationsByDistanceCalculator.cs" />
     <Compile Include="DataModel\Journey.cs" />
     <Compile Include="DataModel\Route.cs" />
     <Compile Include="DataModel\Station.cs" />
