@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TrainTrip.Calculators;
-using TrainTrip.Data;
+using TrainTrip.DataModel;
 using TrainTrip.Processors;
 using Moq;
 using NUnit.Framework;

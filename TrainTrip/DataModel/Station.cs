@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TrainTrip.Data
+namespace TrainTrip.DataModel
 {
     public class Station
     {

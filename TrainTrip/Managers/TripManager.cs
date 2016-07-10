@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using TrainTrip.Calculators;
-using TrainTrip.Data;
+using TrainTrip.DataModel;
 using TrainTrip.Exceptions;
 using TrainTrip.Processors;
 
@@ -32,10 +32,6 @@ namespace TrainTrip.Managers
             return m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
         }
 
-        public Trip GetFastestTripByStops(string sourceStation, string destinationStation)
-        {
-            return m_TripStopCalculator.GetFastestTipByStops(sourceStation, destinationStation);
-        }
 
         public List<Trip> GetTripsByStops(string sourceStation, string destinationStation, int maximumStops)
         {

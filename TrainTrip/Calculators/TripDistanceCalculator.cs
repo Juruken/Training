@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TrainTrip.Data;
+using TrainTrip.DataModel;
 using TrainTrip.Exceptions;
 
 namespace TrainTrip.Processors
@@ -9,6 +9,8 @@ namespace TrainTrip.Processors
     /// <summary>
     /// Responsible for calculating trips for a given source and destination location
     /// </summary>
+    // TODO: Refactor all Calculators to implement a BaseTripCalculator, so we have a protected m_StationProvider
+    // TODO: and a single validate stations exist function
     public class TripDistanceCalculator : ITripDistanceCalculator
     {
         private readonly IStationProvider m_StationProvider;
@@ -68,7 +70,6 @@ namespace TrainTrip.Processors
         {
             List<Trip> trips = null;
             var sourceDestinationKey = new Tuple<string, string>(sourceStation, destinationStation);
-
             var source = m_StationProvider.GetStation(sourceStation);
 
             // Loop of each route to see if they can get to our required destination.

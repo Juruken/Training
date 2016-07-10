@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using TrainTrip.Data;
+using TrainTrip.DataModel;
 
 namespace TrainTrip.Managers
 {
@@ -7,7 +7,6 @@ namespace TrainTrip.Managers
     {
         List<Trip> GetPermutations(string sourceStation, string destinationStation, int maximumDistance);
 
-        Trip GetFastestTripByStops(string sourceStation, string destinationStation);
         List<Trip> GetTripsByStops(string sourceStation, string destinationStation, int maximumStops);
 
         Trip GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly);

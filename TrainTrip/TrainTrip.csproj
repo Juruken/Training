@@ -48,10 +48,10 @@
     <Compile Include="Calculators\TripDistanceCalculator.cs" />
     <Compile Include="Calculators\TripPermutationsCalculator.cs" />
     <Compile Include="Calculators\TripStopCalculator.cs" />
-    <Compile Include="Data\Journey.cs" />
-    <Compile Include="Data\Route.cs" />
-    <Compile Include="Data\Station.cs" />
-    <Compile Include="Data\Trip.cs" />
+    <Compile Include="DataModel\Journey.cs" />
+    <Compile Include="DataModel\Route.cs" />
+    <Compile Include="DataModel\Station.cs" />
+    <Compile Include="DataModel\Trip.cs" />
     <Compile Include="Exceptions\InvalidJourneyException.cs" />
     <Compile Include="Exceptions\InvalidRouteException.cs" />
     <Compile Include="Exceptions\InvalidStationException.cs" />

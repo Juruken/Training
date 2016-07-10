@@ -1,4 +1,4 @@
-﻿using TrainTrip.Data;
+﻿using TrainTrip.DataModel;
 
 namespace TrainTrip.Calculators
 {

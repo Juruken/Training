@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using TrainTrip.Data;
+using TrainTrip.DataModel;
 
 namespace TrainTrip.Calculators
 {

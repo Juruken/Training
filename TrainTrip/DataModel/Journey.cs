@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace TrainTrip.Data
+namespace TrainTrip.DataModel
 {
     public class Journey
     {

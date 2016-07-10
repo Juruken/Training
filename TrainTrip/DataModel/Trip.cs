@@ -1,4 +1,4 @@
-﻿namespace TrainTrip.Data
+﻿namespace TrainTrip.DataModel
 {
     public class Trip
     {

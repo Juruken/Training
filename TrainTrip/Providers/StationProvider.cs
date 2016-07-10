@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TrainTrip.Data;
+using TrainTrip.DataModel;
 
 namespace TrainTrip.Processors
 {

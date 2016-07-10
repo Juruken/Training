@@ -88,15 +88,6 @@ namespace TrainTripTests.Component
             Assert.IsNull(trips);
         }
 
-        [Test]
-        public void GetFastestTripByStops(string sourceStation, string destinationStation, int expectedResult)
-        {
-            Assert.Fail();
-            var result = m_TripManager.GetFastestTripByStops(sourceStation, destinationStation);
-
-            Assert.NotNull(result);
-            Assert.AreEqual(result.TotalStops, expectedResult);
-        }
 
         [Test]
         public void GetTripsByStops(string sourceStation, string destinationStation, int maximumStops)

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using TrainTrip.Data;
+using TrainTrip.DataModel;
 using TrainTrip.Processors;
 
 namespace TrainTrip.Providers
