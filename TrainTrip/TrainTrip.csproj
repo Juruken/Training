@@ -53,6 +53,7 @@
     <Compile Include="Data\Station.cs" />
     <Compile Include="Data\Trip.cs" />
     <Compile Include="Exceptions\InvalidJourneyException.cs" />
+    <Compile Include="Exceptions\InvalidRouteException.cs" />
     <Compile Include="Exceptions\InvalidStationException.cs" />
     <Compile Include="Exceptions\InvalidStationFormat.cs" />
     <Compile Include="Exceptions\InvalidTripException.cs" />

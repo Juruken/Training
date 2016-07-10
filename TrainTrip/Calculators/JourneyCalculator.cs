@@ -21,8 +21,9 @@ namespace TrainTrip.Calculators
         /// Accepts an array of Station Names. Will calculate a journey in index order, if any of the stations don't exist it will throw an argument exception.
         /// </summary>
         /// <param name="plannedJourney"></param>
+        /// <param name="directRouteOnly"></param>
         /// <returns></returns>
-        public Journey Calculate(string[] plannedJourney)
+        public Journey GetJourneyByRoutes(string[] plannedJourney, int maximumDistance, bool directRouteOnly)
         {
             ValidatePlannedJourney(plannedJourney);
 
@@ -40,7 +41,8 @@ namespace TrainTrip.Calculators
                     continue;
                 }
 
-                var trip = m_TripDistanceCalculator.GetFastestTripByDistance(previousStation, stationName);
+                // TODO int maximum distance, directRouteOnly
+                var trip = m_TripDistanceCalculator.GetFastestTripByDistance(previousStation, stationName, maximumDistance, directRouteOnly);
                 
                 if (trip == null)
                     throw new InvalidTripException(String.Format("No trip for: {0}, {1}.", previousStation, stationName));

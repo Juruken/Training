@@ -4,6 +4,6 @@ namespace TrainTrip.Calculators
 {
     public interface IJourneyCalculator
     {
-        Journey Calculate(string[] routes);
+        Journey GetJourneyByRoutes(string[] routes, int maximumDistance, bool directRouteOnly);
     }
 }

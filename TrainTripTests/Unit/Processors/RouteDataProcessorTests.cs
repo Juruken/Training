@@ -6,6 +6,7 @@ using TrainTrip.Providers;
 using TrainTrip.Validators;
 using Moq;
 using NUnit.Framework;
+using TrainTrip.Exceptions;
 
 namespace TrainTripTests.Processors
 {
@@ -39,7 +40,7 @@ namespace TrainTripTests.Processors
         [Test]
         public void TestInvalidData()
         {
-            Assert.That(() => m_RouteDataProcessor.Process(new List<string> { INVALID_ROUTE_STRING + "," + "AB1" }), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => m_RouteDataProcessor.Process(new List<string> { INVALID_ROUTE_STRING + "," + "AB1" }), Throws.TypeOf<InvalidRouteException>());
         }
     }
 }

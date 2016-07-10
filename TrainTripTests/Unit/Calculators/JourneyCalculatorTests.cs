@@ -22,21 +22,29 @@ namespace TrainTripTests.Calculators
             CreateTrips();
 
             var tripCalculator = new Mock<ITripDistanceCalculator>();
-            tripCalculator.Setup(r => r.GetFastestTripByDistance(It.IsAny<string>(), It.IsAny<string>())).Returns((string s, string t) => GetTrip(s, t));
+            tripCalculator.Setup(r => r.GetFastestTripByDistance(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>()))
+                .Returns((string s, string t) => GetTrip(s, t));
             
             m_JourneyCalculator = new JourneyCalculator(m_StationProvider.Object, tripCalculator.Object);
         }
 
         [Test]
-        // TODO: Add more tests cases, using test case return function
-        public void TestGenerateJourney()
+        // TODO: Add more tests cases
+        public void TestGenerateJourneyWithDirectRoute()
         {
             // A - B - C
             var stations = new[] {"A", "B", "C"};
-            var journey = m_JourneyCalculator.Calculate(stations);
+            var journey = m_JourneyCalculator.GetJourneyByRoutes(stations, 1000, true);
 
             Assert.NotNull(journey);
             Assert.AreEqual(9, journey.Distance);
+        }
+
+        [Test]
+        public void TestGenerateJourneyWithoutDirectRoute()
+        {
+            // TODO;
+            Assert.Fail();
         }
 
         private Trip GetTrip(string sourceStation, string destinationStation)

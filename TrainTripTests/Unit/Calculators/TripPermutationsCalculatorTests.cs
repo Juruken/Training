@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using TrainTrip.Calculators;
-using TrainTrip.Data;
 using TrainTrip.Processors;
 using Moq;
 using NUnit.Framework;
@@ -22,31 +23,29 @@ namespace TrainTripTests.Calculators
         // Total Permutations for permutations calculator
         // CDC, CEBC, CEBCDC, CDCEBC, CDEBC, CEBCEBC, CEBCEBCEBC
         [Test]
-        public void TestPermutations()
+        public void TestGetPermutations()
         {
             var trips = m_TripPermutationsCalculator.GetPermutations("C", "C", 30);
 
             Assert.NotNull(trips);
             Assert.AreEqual(7, trips.Count);
 
-            // TODO: Check for each permutation? boring...
-        }
-
-        private List<Trip> CalculatedTrips()
-        {
-            return new List<Trip>()
+            var expectedTripNames = new List<string>
             {
-                new Trip()
-                {
-                    TotalDistance = 11,
-                    TripName = "BEBC"
-                },
-                new Trip()
-                {
-                    TotalDistance = 16,
-                    TripName = "CDC"
-                }
+                "CDC",
+                "CEBC",
+                "CEBCDC",
+                "CDCEBC",
+                "CDEBC",
+                "CEBCEBC",
+                "CEBCEBCEBC"
             };
+
+            foreach (var expectedTripName in expectedTripNames)
+            {
+                if (trips.All(t => t.TripName != expectedTripName))
+                    Assert.Fail(String.Format("Failed to find trip {0}", expectedTripName));
+            }
         }
     }
 }

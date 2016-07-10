@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using TrainTrip.Exceptions;
 using TrainTrip.Providers;
 using TrainTrip.Validators;
 
@@ -43,8 +44,7 @@ namespace TrainTrip.Processors
                 {
                     if (!m_RouteDataValidator.Validate(route))
                     {
-                        // TODO: Refacotor this into InvalidRouteException
-                        throw new ArgumentException("Route Data contains invalid format");
+                        throw new InvalidRouteException(String.Format("{0}", route));
                     }
 
                     routes.Add(route);

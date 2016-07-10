@@ -26,17 +26,17 @@ namespace TrainTripTests.Component
         }
         
         [Test]
-        public void GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance)
+        public void GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
         {
-            var result = m_TripManager.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance);
+            var result = m_TripManager.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
 
             Assert.NotNull(result);
         }
 
         [Test]
-        public void GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance)
+        public void GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
         {
-            var result = m_TripManager.GetTripsByDistance(sourceStation, destinationStation, maximumDistance);
+            var result = m_TripManager.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
 
             Assert.NotNull(result);
         }
@@ -51,13 +51,12 @@ namespace TrainTripTests.Component
         }
 
         [Test]
-        public void GetJourney(string[] stations)
+        public void GetJourney(string[] stations, int maximumDistance, bool directRouteOnly)
         {
-            var result = m_TripManager.GetJourney(stations);
+            var result = m_TripManager.GetJourney(stations, maximumDistance, directRouteOnly);
 
             Assert.NotNull(result);
         }
-
         
         public void GetFastestTripByStops(string sourceStation, string destinationStation, int expectedResult)
         {
@@ -76,9 +75,9 @@ namespace TrainTripTests.Component
         }
 
         [Test, TestCaseSource(typeof(TestDataProvider), "GetJourneyLengthByDistanceCases")]
-        public void GetJourneyLengthByDistance(string[] stations, int expectedResult)
+        public void GetJourneyLengthByDistance(string[] stations, int maximumDistance, bool directRouteOnly, int expectedResult)
         {
-            var result = m_TripManager.GetJourneyLengthByDistance(stations);
+            var result = m_TripManager.GetJourneyLengthByDistance(stations, maximumDistance, directRouteOnly);
 
             Assert.NotNull(result);
             Assert.AreEqual(expectedResult, result);
@@ -87,7 +86,7 @@ namespace TrainTripTests.Component
         [Test]
         public void TestFailToGetJourney()
         {
-            var result = m_TripManager.GetJourneyLengthByDistance(new[] { "A", "E", "D" });
+            var result = m_TripManager.GetJourneyLengthByDistance(new[] { "A", "E", "D" }, 1000, true);
 
             Assert.Null(result);
         }
@@ -95,7 +94,7 @@ namespace TrainTripTests.Component
         [Test]
         public void GetJourneyLengthByDistance()
         {
-            var result = m_TripManager.GetJourneyLengthByDistance(new[] { "A", "B", "C" });
+            var result = m_TripManager.GetJourneyLengthByDistance(new[] { "A", "B", "C" }, 1000, true);
 
             Assert.NotNull(result);
             Assert.AreEqual(9, result);

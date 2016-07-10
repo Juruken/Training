@@ -22,14 +22,14 @@ namespace TrainTrip.Managers
             m_JourneyCalculator = journeyCalculator;
         }
 
-        public Trip GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance)
+        public Trip GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
         {
-            return m_TripDistanceCalculator.GetFastestTripByDistance(sourceStation, destinationStation);
+            return m_TripDistanceCalculator.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
         }
 
-        public List<Trip> GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance)
+        public List<Trip> GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
         {
-            return m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance);
+            return m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
         }
 
         public Trip GetFastestTripByStops(string sourceStation, string destinationStation)
@@ -47,19 +47,22 @@ namespace TrainTrip.Managers
             return m_TripPermutationsCalculator.GetPermutations(sourceStation, destinationStation, maximumDistance);
         }
 
-        public Journey GetJourney(string[] stations)
+        public Journey GetJourney(string[] stations, int maximumDistance, bool directRouteOnly)
         {
-            return m_JourneyCalculator.Calculate(stations);
+            return m_JourneyCalculator.GetJourneyByRoutes(stations, maximumDistance, directRouteOnly);
         }
 
-        public int GetJourneyLengthByDistance(string[] stations)
+        public int GetJourneyLengthByDistance(string[] stations, int maximumDistance, bool directRouteOnly)
         {
-            var journey = GetJourney(stations);
+            var journey = GetJourney(stations, maximumDistance, directRouteOnly);
 
-            if (journey == null)
-                throw new InvalidJourneyException(stations.ToString());
+            if (journey != null)
+                return journey.Distance;
 
-            return journey.Distance;
+            if (directRouteOnly)
+                throw new InvalidRouteException(stations.ToString());
+                
+            throw new InvalidJourneyException(stations.ToString());
         }
     }
 }

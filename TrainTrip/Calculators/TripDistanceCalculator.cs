@@ -11,9 +11,6 @@ namespace TrainTrip.Processors
     /// </summary>
     public class TripDistanceCalculator : ITripDistanceCalculator
     {
-        // TODO: Make sure this doesn't eat up performance, pick a smaller default maximum?
-        private const int DEFAULT_MAXIMUM_DISTANCE = 10000;
-
         private readonly IStationProvider m_StationProvider;
         private readonly Dictionary<Tuple<string, string>, List<Trip>> m_CalculatedTrips;
 
@@ -23,16 +20,16 @@ namespace TrainTrip.Processors
             m_CalculatedTrips = new Dictionary<Tuple<string, string>, List<Trip>>();
         }
 
-        public Trip GetFastestTripByDistance(string sourceStation, string destinationStation)
+        public Trip GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRoutesOnly)
         {
             ValidateStationsExist(sourceStation, destinationStation);
-
+            
             List<Trip> trips;
             var sourceDestinationKey = new Tuple<string, string>(sourceStation, destinationStation);
 
             if (!m_CalculatedTrips.ContainsKey(sourceDestinationKey))
             {
-                trips = GetTripsByDistance(sourceStation, destinationStation);
+                trips = GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRoutesOnly);
             }
             else
             {
@@ -40,26 +37,36 @@ namespace TrainTrip.Processors
             }
             
             // Expecting the default to be null
-            return trips.OrderBy(t => t.TotalDistance).FirstOrDefault();
+            return trips != null ? trips.OrderBy(t => t.TotalDistance).FirstOrDefault() : null;
         }
-
-        // TODO: 
-
-        public List<Trip> GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance = DEFAULT_MAXIMUM_DISTANCE)
+        
+        public List<Trip> GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRoutesOnly)
         {
             ValidateStationsExist(sourceStation, destinationStation);
-
+            
             var sourceDestinationKey = new Tuple<string, string>(sourceStation, destinationStation);
 
             if (m_CalculatedTrips.ContainsKey(sourceDestinationKey))
                 return m_CalculatedTrips[sourceDestinationKey];
             
-            return CalculateTripsByDistance(sourceStation, destinationStation, maximumDistance);
+            return CalculateTripsByDistance(sourceStation, destinationStation, maximumDistance, directRoutesOnly);
         }
 
-        private List<Trip> CalculateTripsByDistance(string sourceStation, string destinationStation, int maximumDistance)
+        /// <summary>
+        /// Calculates a trip from the source station to the destination station, under a given maximum distance.
+        /// Allows for user to specify direct routes only. If true, trip will only return if there is a direct route from the sourceStation to destinationStation.
+        /// e.g. 
+        /// Given AB1, A -> B returns a route
+        /// Given AC1, CB1, A -> B returns null
+        /// </summary>
+        /// <param name="sourceStation"></param>
+        /// <param name="destinationStation"></param>
+        /// <param name="maximumDistance"></param>
+        /// <param name="directRoutesOnly"></param>
+        /// <returns></returns>
+        private List<Trip> CalculateTripsByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRoutesOnly)
         {
-            var trips = new List<Trip>();
+            List<Trip> trips = null;
             var sourceDestinationKey = new Tuple<string, string>(sourceStation, destinationStation);
 
             var source = m_StationProvider.GetStation(sourceStation);
@@ -67,12 +74,12 @@ namespace TrainTrip.Processors
             // Loop of each route to see if they can get to our required destination.
             foreach (var route in source.Routes.Values)
             {
-                Trip trip;
+                Trip trip = null;
                 if (route.DestinationStation == destinationStation)
                 {
                     trip = route.ConvertToTrip();
                 }
-                else
+                else if (!directRoutesOnly)
                 {
                     trip = GenerateTrip(route.Distance, maximumDistance, route.DestinationStation, destinationStation);
 
@@ -81,10 +88,16 @@ namespace TrainTrip.Processors
 
                     trip.TripName = sourceStation + trip.TripName;
                 }
-                
+
+                if (trip == null)
+                    continue;
+
+                if (trips == null)
+                    trips = new List<Trip>();
+
                 trips.Add(trip);
             }
-
+            
             m_CalculatedTrips.Add(sourceDestinationKey, trips);
 
             return trips;
