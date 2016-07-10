@@ -89,15 +89,31 @@ namespace TrainTripTests.Component
         }
 
 
-        [Test]
-        public void GetTripsByStops(string sourceStation, string destinationStation, int maximumStops)
+        [TestCase("C", "F", 5)]
+        public void TestInvalidRouteThrowsException(string sourceStation, string destinationStation, int maximumStops)
         {
-            Assert.Fail();
-            var result = m_TripManager.GetTripsByStops(sourceStation, destinationStation, maximumStops);
-
-            Assert.NotNull(result);
+            Assert.That(() => m_TripManager.GetTripsByStops(sourceStation, destinationStation, maximumStops), Throws.TypeOf<InvalidStationException>());
         }
-        
+
+        [TestCase("C", "C", 3, 2)]
+        [TestCase("A", "C", 4, 3)]
+        public void TestGetTripsLessThanXStops(string sourceStation, string destinationStation, int maximumStops, int expectedResults)
+        {
+            var trips = m_TripManager.GetTripsByStops(sourceStation, destinationStation, maximumStops);
+
+            Assert.NotNull(trips);
+            Assert.AreEqual(expectedResults, trips.Count);
+        }
+
+        [TestCase("C", "C", 1)]
+        [TestCase("A", "C", 1)]
+        public void TestFailGetTripsLessThanXStops(string sourceStation, string destinationStation, int stopLimit)
+        {
+            var trips = m_TripManager.GetTripsByStops(sourceStation, destinationStation, stopLimit);
+
+            Assert.Null(trips);
+        }
+
         [Test, TestCaseSource(typeof(TestDataProvider), "GetJourneyDirectRouteCases")]
         public void TestGetJourneyDirectRouteOnly(string[] stations, int maximumDistance, bool directRouteOnly, int expectedResult)
         {
