@@ -11,6 +11,7 @@ namespace TrainTrip.App
 {
     class Program
     {       
+        // TODO: Move this into a constants folder
         private enum InputType
         {
             InvalidInput,
@@ -28,8 +29,6 @@ namespace TrainTrip.App
         private static Dictionary<string, InputType> m_InputToOutputMapping;
         private static Dictionary<InputType, string> m_PromptTextByInputType;
 
-        // TODO: Write tests for this? 
-        // TODO: Or better yet... Make this less bad!
         static void Main(string[] args)
         {
             var filePath = ConfigurationManager.AppSettings["InputFilePath"];
@@ -45,7 +44,9 @@ namespace TrainTrip.App
             var tripFactory = new TripFactory(inputDelimeterString[0], dataProvider);
             var tripManager = tripFactory.CreateTripManager();
 
+            // m_InputToOutputMapping = tripFactory.GetInputToOutputMapping();
             BuildOptions();
+            // m_PromptTextByInputType = tripFactory.GetPromptTextByInputType();
             BuildPromptText();
             BuildInitialUserPrompt();
             
@@ -115,31 +116,15 @@ namespace TrainTrip.App
                 Output(outputMessage);
             } while (input != "Exit");
         }
-
-        // TODO: MOVE ALL OF THIS... to testable stuff soon.
-
-        private static InputType ValidateInitialOptionInput(string inputString)
-        {
-            if (string.IsNullOrEmpty(inputString))
-                return InputType.InvalidInput;
-
-            inputString = inputString.ToLower();
-
-            if (m_InputToOutputMapping.ContainsKey(inputString))
-                return m_InputToOutputMapping[inputString];
-
-            // If we don't know what it is, assume it is invalid.
-            return InputType.InvalidInput;
-        }
-
+        
         private static void Output(string output)
         {
             Console.WriteLine(output);
         }
 
+        // TODO: Move this into a factory!
         private static void BuildOptions()
         {
-            // m_InputToOutputMapping = tripFactory.GetInputToOutputMapping();
             m_InputToOutputMapping = new Dictionary<string, InputType>
             {
                 { "1", InputType.GetJourney },
@@ -147,8 +132,8 @@ namespace TrainTrip.App
                 { "3", InputType.GetRoutesByExactStops },
                 { "4", InputType.GetShortestRouteByDistance },
                 { "5", InputType.GetPermutations },
-                // TODO: Print available Routes
-                // TODO: Print available Stations
+                // TODO: Print available Routes?
+                // TODO: Print available Stations?
                 { "help", InputType.Help },
                 { "exit", InputType.Exit }
             };
@@ -157,7 +142,6 @@ namespace TrainTrip.App
         // TODO: Move this to the factory!
         private static void BuildPromptText()
         {
-            // m_PromptTextByInputType = tripFactory.GetPromptTextByInputType();
             m_PromptTextByInputType = new Dictionary<InputType, string>
             {
                 { InputType.GetJourney, "The distance of a given route, expected format <StationName>-<StationName> (e.g. A-B or A-B-C)." },
@@ -215,7 +199,8 @@ namespace TrainTrip.App
                 var permutations = tripManager.GetRoutesByMaximumStops(sourceStation, destinationStation, maximumDistance);
                 return permutations != null ? permutations.Count.ToString() : UNKNOWN_ROUTE_MESSAGE;
             }
-            else if (inputType == InputType.GetPermutations)
+
+            if (inputType == InputType.GetPermutations)
             {
                 var permutations = tripManager.GetPermutations(sourceStation, destinationStation, maximumDistance);
                 return permutations != null ? permutations.Count.ToString() : UNKNOWN_ROUTE_MESSAGE;
@@ -224,6 +209,22 @@ namespace TrainTrip.App
             throw new Exception("Unexpected Input Type");
         }
 
+        // TODO: Move this into a UserInputValidator
+        private static InputType ValidateInitialOptionInput(string inputString)
+        {
+            if (string.IsNullOrEmpty(inputString))
+                return InputType.InvalidInput;
+
+            inputString = inputString.ToLower();
+
+            if (m_InputToOutputMapping.ContainsKey(inputString))
+                return m_InputToOutputMapping[inputString];
+
+            // If we don't know what it is, assume it is invalid.
+            return InputType.InvalidInput;
+        }
+
+        // TODO: Move this into a UserInputValidator
         private static bool IsExpectedInputValid(string input, InputType expectedInputType)
         {
             // Assume input is invalid by default
