@@ -51,18 +51,5 @@ namespace TrainTrip.Managers
         {
             return m_JourneyCalculator.GetJourneyByRoutes(stations, maximumDistance, directRouteOnly);
         }
-
-        public int GetJourneyLengthByDistance(string[] stations, int maximumDistance, bool directRouteOnly)
-        {
-            var journey = GetJourney(stations, maximumDistance, directRouteOnly);
-
-            if (journey != null)
-                return journey.Distance;
-
-            if (directRouteOnly)
-                throw new InvalidRouteException(stations.ToString());
-                
-            throw new InvalidJourneyException(stations.ToString());
-        }
     }
 }

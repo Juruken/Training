@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TrainTrip;
 using TrainTrip.Factory;
 using TrainTrip.Managers;
 using Moq;
 using NUnit.Framework;
+using TrainTrip.Exceptions;
 
 namespace TrainTripTests.Component
 {
@@ -25,20 +27,39 @@ namespace TrainTripTests.Component
             m_TripManager = tripFactory.CreateTripManager();
         }
         
-        [Test]
-        public void GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
+        [TestCase("C", "C", 30, false, 11, "CEBC")]
+        public void GetFastestTripByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly,
+                                            int expectedDistance, string expectedName)
         {
-            var result = m_TripManager.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+            var trip = m_TripManager.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
 
-            Assert.NotNull(result);
+            Assert.NotNull(trip);
+            Assert.AreEqual(expectedDistance, trip.TotalDistance);
+            Assert.AreEqual(expectedName, trip.TripName);
         }
 
-        [Test]
-        public void GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
+        [TestCase("A", "D", 30, true, "AD", 5)]
+        public void TestGetDirectRoute(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly, string expectedName, int expectedDistance)
         {
-            var result = m_TripManager.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+            var trip = m_TripManager.GetFastestTripByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
 
-            Assert.NotNull(result);
+            Assert.NotNull(trip);
+            Assert.AreEqual(expectedDistance, trip.TotalDistance);
+            Assert.AreEqual(expectedName, trip.TripName);
+        }
+
+        [TestCase("C", "C", 30, false, 2, "CEBC", 11)]
+        public void TestGetNonDirectTrip(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly,
+            int expectedTripCount, string expectedShortestTripName, int expectedDistance)
+        {
+            var trips = m_TripManager.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+
+            Assert.NotNull(trips);
+            Assert.AreEqual(expectedTripCount, trips.Count);
+
+            var shortestTrip = trips.OrderBy(t => t.TotalDistance).First();
+            Assert.AreEqual(expectedShortestTripName, shortestTrip.TripName);
+            Assert.AreEqual(expectedDistance, shortestTrip.TotalDistance);
         }
 
         [TestCase("C", "C", 30, 7)]
@@ -50,68 +71,69 @@ namespace TrainTripTests.Component
             Assert.AreEqual(expectedResult, result.Count);
         }
 
-        [Test]
-        public void GetJourney(string[] stations, int maximumDistance, bool directRouteOnly)
+        [TestCase("A", "C", 30, true)]
+        [TestCase("C", "C", 30, true)]
+        public void TestFailDirectRoute(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
         {
-            var result = m_TripManager.GetJourney(stations, maximumDistance, directRouteOnly);
+            var trips = m_TripManager.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
 
-            Assert.NotNull(result);
+            Assert.IsNull(trips);
         }
-        
+
+        [TestCase("C", "C", 1, false)]
+        public void TestFailMaximumDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
+        {
+            var trips = m_TripManager.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+
+            Assert.IsNull(trips);
+        }
+
+        [Test]
         public void GetFastestTripByStops(string sourceStation, string destinationStation, int expectedResult)
         {
+            Assert.Fail();
             var result = m_TripManager.GetFastestTripByStops(sourceStation, destinationStation);
 
             Assert.NotNull(result);
             Assert.AreEqual(result.TotalStops, expectedResult);
         }
 
-        
+        [Test]
         public void GetTripsByStops(string sourceStation, string destinationStation, int maximumStops)
         {
+            Assert.Fail();
             var result = m_TripManager.GetTripsByStops(sourceStation, destinationStation, maximumStops);
 
             Assert.NotNull(result);
         }
-
-        [Test, TestCaseSource(typeof(TestDataProvider), "GetJourneyLengthByDistanceCases")]
-        public void GetJourneyLengthByDistance(string[] stations, int maximumDistance, bool directRouteOnly, int expectedResult)
+        
+        [Test, TestCaseSource(typeof(TestDataProvider), "GetJourneyDirectRouteCases")]
+        public void TestGetJourneyDirectRouteOnly(string[] stations, int maximumDistance, bool directRouteOnly, int expectedResult)
         {
-            var result = m_TripManager.GetJourneyLengthByDistance(stations, maximumDistance, directRouteOnly);
+            var journey = m_TripManager.GetJourney(stations, maximumDistance, directRouteOnly);
 
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedResult, result);
+            Assert.NotNull(journey);
+            Assert.AreEqual(expectedResult, journey.Distance);
         }
 
         [Test]
-        public void TestFailToGetJourney()
+        public void TestInvalidDirectJourneyThrowsException()
         {
-            var result = m_TripManager.GetJourneyLengthByDistance(new[] { "A", "E", "D" }, 1000, true);
-
-            Assert.Null(result);
-        }
-
-        [Test]
-        public void GetJourneyLengthByDistance()
-        {
-            var result = m_TripManager.GetJourneyLengthByDistance(new[] { "A", "B", "C" }, 1000, true);
-
-            Assert.NotNull(result);
-            Assert.AreEqual(9, result);
+            Assert.That(() => m_TripManager.GetJourney(new[] { "A", "E", "D" }, 1000, true), Throws.TypeOf<InvalidRouteException>());
         }
     }
 }
 
 public class TestDataProvider
 {
-    public static IEnumerable GetJourneyLengthByDistanceCases
+    public static IEnumerable GetJourneyDirectRouteCases
     {
         get
         {
-            yield return new TestCaseData(new [] { "A", "B", "C" }, 9).SetDescription("The distance of the route A-B-C should be 9.");
-            yield return new TestCaseData(new [] { "A", "D" }, 5).SetDescription("The distance of the route A-D should be 5.");
-            yield return new TestCaseData(new [] { "A", "D", "C" }, 13).SetDescription("The distance of the route A - D - C should be 13.");
-            yield return new TestCaseData(new [] { "A", "E", "B", "C", "D" }, 22).SetDescription("The distance of the route A - E - B - C - D should be 22.");
+            yield return new TestCaseData(new [] { "A", "B", "C" }, 1000, true, 9).SetDescription("The distance of the route A-B-C should be 9.");
+            yield return new TestCaseData(new [] { "A", "D" }, 1000, true, 5).SetDescription("The distance of the route A-D should be 5.");
+            yield return new TestCaseData(new [] { "A", "D", "C" }, 1000, true, 13).SetDescription("The distance of the route A - D - C should be 13.");
+            yield return new TestCaseData(new [] { "A", "E", "B", "C", "D" }, 1000, true, 22).SetDescription("The distance of the route A - E - B - C - D should be 22.");
         }
     }
 }

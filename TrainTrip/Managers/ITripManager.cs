@@ -14,6 +14,5 @@ namespace TrainTrip.Managers
         List<Trip> GetTripsByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly);
 
         Journey GetJourney(string[] stations, int maximumDistance, bool directRouteOnly);
-        int GetJourneyLengthByDistance(string[] stations, int maximumDistance, bool directRouteOnly);
     }
 }

@@ -71,7 +71,9 @@ namespace TrainTripTests.Processors
         [TestCase("C", "C", 1, false)]
         public void TestFailMaximumDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly)
         {
-            
+            var trips = m_TripDistanceCalculator.GetTripsByDistance(sourceStation, destinationStation, maximumDistance, directRouteOnly);
+
+            Assert.IsNull(trips); 
         }
     }
 }
