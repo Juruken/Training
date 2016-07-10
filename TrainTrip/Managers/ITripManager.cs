@@ -9,6 +9,7 @@ namespace TrainTrip.Managers
 
         List<Trip> GetTripsByMaximumStops(string sourceStation, string destinationStation, int maximumStops);
         int GetCountOfTripsForStationsByStops(string sourceStation, string destinationStation, int maximumStops);
+        // TODO: Add Tests.
         int GetCountOfTripsByExactStops(string sourceStation, string destinationStation, int exactStops);
 
         Trip GetShortestRouteByDistance(string sourceStation, string destinationStation, int maximumDistance, bool directRouteOnly);
