@@ -27,7 +27,7 @@ namespace TrainTripTests.Processors
         }
 
         [Test]
-        public void TestValidInput()
+        public void TestProcessValidData()
         {
             var result = m_RouteDataProcessor.Process(new List<string> { "BA2" + "," + "AB1" });
 
@@ -38,7 +38,7 @@ namespace TrainTripTests.Processors
         }
 
         [Test]
-        public void TestInvalidData()
+        public void TestInvalidDataThrowsException()
         {
             Assert.That(() => m_RouteDataProcessor.Process(new List<string> { INVALID_ROUTE_STRING + "," + "AB1" }), Throws.TypeOf<InvalidRouteException>());
         }

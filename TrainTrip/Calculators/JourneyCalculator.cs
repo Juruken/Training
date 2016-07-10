@@ -28,7 +28,7 @@ namespace TrainTrip.Calculators
             ValidatePlannedJourney(plannedJourney);
 
             string previousStation = null;
-            var journey = new Journey()
+            var journey = new Journey
             {
                 Trips = new List<Trip>()
             };
@@ -40,12 +40,17 @@ namespace TrainTrip.Calculators
                     previousStation = stationName;
                     continue;
                 }
-
-                // TODO int maximum distance, directRouteOnly
-                var trip = m_TripDistanceCalculator.GetFastestTripByDistance(previousStation, stationName, maximumDistance, directRouteOnly);
                 
+                var trip = m_TripDistanceCalculator.GetFastestTripByDistance(previousStation, stationName, maximumDistance, directRouteOnly);
+
                 if (trip == null)
-                    throw new InvalidTripException(String.Format("No trip for: {0}, {1}.", previousStation, stationName));
+                {
+                    var errorMessage = String.Format("No trip for: {0}, {1}.", previousStation, stationName);
+                    if (directRouteOnly)
+                        throw new InvalidRouteException(errorMessage);
+
+                    throw new InvalidTripException(errorMessage);
+                }
 
                 journey.Trips.Add(trip);
 

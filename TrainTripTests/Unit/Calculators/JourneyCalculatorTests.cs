@@ -5,6 +5,7 @@ using TrainTrip.Data;
 using TrainTrip.Processors;
 using Moq;
 using NUnit.Framework;
+using TrainTrip.Exceptions;
 
 namespace TrainTripTests.Calculators
 {
@@ -23,13 +24,12 @@ namespace TrainTripTests.Calculators
 
             var tripCalculator = new Mock<ITripDistanceCalculator>();
             tripCalculator.Setup(r => r.GetFastestTripByDistance(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>()))
-                .Returns((string s, string t) => GetTrip(s, t));
+                .Returns((string s, string t, int i, bool b) => GetTrip(s, t));
             
             m_JourneyCalculator = new JourneyCalculator(m_StationProvider.Object, tripCalculator.Object);
         }
 
         [Test]
-        // TODO: Add more tests cases
         public void TestGenerateJourneyWithDirectRoute()
         {
             // A - B - C
@@ -41,10 +41,11 @@ namespace TrainTripTests.Calculators
         }
 
         [Test]
-        public void TestGenerateJourneyWithoutDirectRoute()
+        public void TestInvalidJourneyThrowsException()
         {
-            // TODO;
-            Assert.Fail();
+            var stations = new[] { "A", "E", "D" };
+
+            Assert.That(() => m_JourneyCalculator.GetJourneyByRoutes(stations, 1000, true), Throws.TypeOf<InvalidRouteException>());
         }
 
         private Trip GetTrip(string sourceStation, string destinationStation)
