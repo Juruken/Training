@@ -78,11 +78,15 @@ namespace TrainTrip.App
                         return;
                 }
 
+                Output(m_PromptTextByInputType[inputType]);
+
+                input = Console.ReadLine();
+
                 // Get Data for User Input
                 // m_InputValidator = tripFactory.GetInputValidator();
                 if (!IsExpectedInputValid(input, inputType))
                 {
-                    Output(m_PromptTextByInputType[InputType.Help]);
+                    Output(m_PromptTextByInputType[InputType.InvalidInput]);
                     continue;
                 }
 
