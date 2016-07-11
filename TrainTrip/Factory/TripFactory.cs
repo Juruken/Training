@@ -39,5 +39,10 @@ namespace TrainTrip.Factory
 
             return new TripManager(tripDistanceCalculator, tripStopCalculator, tripPermutationsCalculator, journeyCalculator);
         }
+
+        public IInputValidator GetInputValidator()
+        {
+            return new InputValidator();
+        }
     }
 }

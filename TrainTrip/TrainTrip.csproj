@@ -47,6 +47,7 @@
     <Compile Include="Calculators\TripDirectRouteDistanceCalculator.cs" />
     <Compile Include="Calculators\TripPermutationsByStopsCalculator.cs" />
     <Compile Include="Calculators\TripPermutationsByDistanceCalculator.cs" />
+    <Compile Include="Constants\InputType.cs" />
     <Compile Include="DataModel\Journey.cs" />
     <Compile Include="DataModel\Route.cs" />
     <Compile Include="DataModel\Station.cs" />
@@ -75,11 +76,14 @@
     <Compile Include="Providers\RouteProvider.cs" />
     <Compile Include="Providers\StationDataProvider.cs" />
     <Compile Include="Providers\StationProvider.cs" />
+    <Compile Include="Validators\IInputValidator.cs" />
+    <Compile Include="Validators\InputValidator.cs" />
     <Compile Include="Validators\IRouteDataValidator.cs" />
     <Compile Include="Validators\IStationDataValidator.cs" />
     <Compile Include="Validators\RouteDataValidator.cs" />
     <Compile Include="Validators\StationDataValidator.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

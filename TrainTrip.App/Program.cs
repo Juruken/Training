@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using TrainTrip.Constants;
 using TrainTrip.Exceptions;
 using TrainTrip.Factory;
 using TrainTrip.Managers;
@@ -11,19 +12,6 @@ namespace TrainTrip.App
 {
     class Program
     {       
-        // TODO: Move this into a constants folder
-        private enum InputType
-        {
-            InvalidInput,
-            Help,
-            Exit,
-            GetJourneyDistance,
-            GetRoutesByMaximumStops,
-            GetRoutesByExactStops,
-            GetShortestRouteByDistance,
-            GetPermutationsByDistance
-        }
-
         private static string UNKNOWN_ROUTE_MESSAGE = "NO SUCH ROUTE";
         private static string m_InitialUserPrompt;
         private static Dictionary<string, InputType> m_InputToOutputMapping;
@@ -43,10 +31,9 @@ namespace TrainTrip.App
             var dataProvider = new DataProvider(filePath);
             var tripFactory = new TripFactory(inputDelimeterString[0], dataProvider);
             var tripManager = tripFactory.CreateTripManager();
+            var inputValidator = tripFactory.GetInputValidator();
 
-            // m_InputToOutputMapping = tripFactory.GetInputToOutputMapping();
             BuildOptions();
-            // m_PromptTextByInputType = tripFactory.GetPromptTextByInputType();
             BuildPromptText();
             BuildInitialUserPrompt();
 
@@ -84,8 +71,7 @@ namespace TrainTrip.App
                     input = input.ToUpper();
 
                 // Get Data for User Input
-                // m_InputValidator = tripFactory.GetInputValidator();
-                while (!IsExpectedInputValid(input, inputType))
+                while (!inputValidator.Validate(input, inputType))
                 {
                     Output(m_PromptTextByInputType[InputType.InvalidInput]);
                     Output(m_PromptTextByInputType[inputType]);
@@ -134,7 +120,6 @@ namespace TrainTrip.App
             Console.WriteLine(output);
         }
 
-        // TODO: Move this into a factory!
         private static void BuildOptions()
         {
             m_InputToOutputMapping = new Dictionary<string, InputType>
@@ -149,7 +134,6 @@ namespace TrainTrip.App
             };
         }
         
-        // TODO: Move this to the factory!
         private static void BuildPromptText()
         {
             m_PromptTextByInputType = new Dictionary<InputType, string>
@@ -197,7 +181,7 @@ namespace TrainTrip.App
                 return trip != null ? trip.TotalDistance.ToString() : UNKNOWN_ROUTE_MESSAGE;
             }
 
-            throw new Exception("Unexpected Input Type");
+            throw new ArgumentException("Unknown Input Type");
         }
 
         private static string ExecuteGetRoutesByExactStopsOrMaximumStopsOrGetPermutations(string input, InputType inputType, ITripManager tripManager)
@@ -221,10 +205,9 @@ namespace TrainTrip.App
                 return tripManager.GetTripPermutationsCountByDistance(sourceStation, destinationStation, maximumDistance).ToString();
             }
 
-            throw new Exception("Unexpected Input Type");
+            throw new ArgumentException("Unknown Input Type");
         }
 
-        // TODO: Move this into a UserInputValidator
         private static InputType ValidateInitialOptionInput(string inputString)
         {
             if (string.IsNullOrEmpty(inputString))
@@ -237,57 +220,6 @@ namespace TrainTrip.App
 
             // If we don't know what it is, assume it is invalid.
             return InputType.InvalidInput;
-        }
-
-        // TODO: Move this into a UserInputValidator
-        private static bool IsExpectedInputValid(string input, InputType expectedInputType)
-        {
-            // Assume input is invalid by default
-            bool isValid = false;
-
-            switch (expectedInputType)
-            {
-                // "The distance of a given route, expected format <StationName>-<StationName> e.g. A-B or A-B-C"
-                case InputType.GetJourneyDistance:
-                // "The length of the shortest route (by distance) from <StationName> to <StationName>, expected format  <StationName>-<StationName> e.g. A-C"
-                case InputType.GetShortestRouteByDistance:
-                    if (!input.Contains("-"))
-                        break;
-
-                    var stationNames = input.Split('-');
-
-                    if (stationNames.Length < 2)
-                        break;
-
-                    foreach (var stationName in stationNames)
-                    {
-                        if (!char.IsLetter(stationName[0]))
-                        {
-                            break;
-                        }
-                    }
-
-                    isValid = true;
-                    break;
-                // "The number of trips starting at <StationName> ending at <StationName> with a maximum of <int> stops expected format: <StationName><StationName><int> e.g. CC3."
-                case InputType.GetRoutesByMaximumStops:
-                // "The number of trips starting at <StationName> ending at <StationName>, with exactly <int> stops (e.g. AC4)."
-                case InputType.GetRoutesByExactStops:
-                // "The number of different routes from <StationName> to <StationName> with maximum of <int> expected format <StationName><StationName><MaxDistance>: e.g. CC30"
-                case InputType.GetPermutationsByDistance:
-                    if (input.Length < 3 || !char.IsLetter(input[0]) || !char.IsLetter(input[1]))
-                        break;
-
-                    int num;
-                    var possibleNumber = input.Substring(2);
-
-                    isValid = int.TryParse(possibleNumber, out num);
-                    break;
-                default:
-                    throw new Exception("Unknown input type");
-            }
-
-            return isValid;
         }
     }
 }
