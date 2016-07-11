@@ -16,28 +16,33 @@ They are downloaded using NuGet from source: https://api.nuget.org/v3/index.json
 To confirm the the coding test works you can run: "CodingTestComponentTests" to mimic the user inputing the test inputs.
 
 
-// GetJourneyDistance
+// When prompted, enter 1
+// InputType.GetJourneyDistance
 1. The distance of the route A-B-C.
 2. The distance of the route A-D.
 3. The distance of the route A-D-C.
 4. The distance of the route A-E-B-C-D.
 5. The distance of the route A-E-D.
 
-// GetRoutesByMaximumStops
+// When prompted, enter 2
+// InputType.GetRoutesByMaximumStops
 // Calculate all routes to C to C with a max of 3 stops. i.e. return a count where the length of the TripName is <= 4 (e.g. CDC, CEBC).
 6. The number of trips starting at C and ending at C with a maximum of 3 stops.  
 	In the sample data below, there are two such trips: C-D-C (2 stops). and C-E-B-C (3 stops).
 
-// GetRoutesByExactStops
+// When prompted, enter 3
+// InputType.GetRoutesByExactStops
 // Calculate all permutations for A - C. Return a Count where the length of the TripName == 5 (e.g. ABCDC, ADCDC, ADEBC)
 7. The number of trips starting at A and ending at C with exactly 4 stops.  
 	In the sample data below, there are three such trips: 
 		A to C (via B,C,D); A to C (via D,C,D); and A to C (via D,E,B).
 
-// GetShortestRouteByDistance
+// When prompted, enter 4
+// InputType.GetShortestRouteByDistance
 8. The length of the shortest route (in terms of distance to travel) from A to C.
 9. The length of the shortest route (in terms of distance to travel) from B to B.
 
-// GetPermutations
+// When prompted, enter 5
+// InputType.GetPermutations
 10. The number of different routes from C to C with a distance of less than 30.  
 	In the sample data, the trips are: CDC, CEBC, CEBCDC, CDCEBC, CDEBC, CEBCEBC, CEBCEBCEBC.
