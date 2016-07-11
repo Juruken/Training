@@ -102,6 +102,10 @@ namespace TrainTrip.App
                 {
                     outputMessage = UNKNOWN_ROUTE_MESSAGE;
                 }
+                catch (InvalidTripException)
+                {
+                    outputMessage = UNKNOWN_ROUTE_MESSAGE;
+                }
                 catch (TrainTripException ex)
                 {
                     outputMessage = ex.Message;
