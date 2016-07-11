@@ -36,18 +36,18 @@ namespace TrainTripTests.Component
             Assert.AreEqual(expectedResults, countOfMatchingTrips);
         }
 
-        [TestCase("C", "C", 11, "CEBC")]
-        public void GetFastestTripByDistance(string sourceStation, string destinationStation, int expectedDistance, string expectedName)
+        /*[TestCase("A", "C", 9, "ABC")]
+        public void TestGetDirectRouteByLowestDistance(string sourceStation, string destinationStation, int expectedDistance, string expectedName)
         {
             var trip = m_TripManager.GetDirectRouteByLowestDistance(sourceStation, destinationStation);
 
             Assert.NotNull(trip);
             Assert.AreEqual(expectedDistance, trip.TotalDistance);
             Assert.AreEqual(expectedName, trip.TripName);
-        }
+        }*/
         
         [TestCase("C", "C", 30, 7)]
-        public void GetPermutations(string sourceStation, string destinationStation, int maximumDistance, int expectedResult)
+        public void TestGetPermutations(string sourceStation, string destinationStation, int maximumDistance, int expectedResult)
         {
             var count = m_TripManager.GetTripPermutationsCountByDistance(sourceStation, destinationStation, maximumDistance);
 
@@ -80,7 +80,7 @@ namespace TrainTripTests.Component
         }
 
         [Test, TestCaseSource(typeof(TestDataProvider), "GetJourneyDirectRouteCases")]
-        public void TestGetJourneyDirectRouteOnly(string[] stations, int maximumDistance, bool directRouteOnly, int expectedResult)
+        public void TestGetJourneyDirectRouteOnly(string[] stations, int expectedResult)
         {
             var journey = m_TripManager.GetJourney(stations);
 
@@ -102,10 +102,10 @@ public class TestDataProvider
     {
         get
         {
-            yield return new TestCaseData(new [] { "A", "B", "C" }, 1000, true, 9).SetDescription("The distance of the route A-B-C should be 9.");
-            yield return new TestCaseData(new [] { "A", "D" }, 1000, true, 5).SetDescription("The distance of the route A-D should be 5.");
-            yield return new TestCaseData(new [] { "A", "D", "C" }, 1000, true, 13).SetDescription("The distance of the route A - D - C should be 13.");
-            yield return new TestCaseData(new [] { "A", "E", "B", "C", "D" }, 1000, true, 22).SetDescription("The distance of the route A - E - B - C - D should be 22.");
+            yield return new TestCaseData(new [] { "A", "B", "C" }, 9).SetDescription("The distance of the route A-B-C should be 9.");
+            yield return new TestCaseData(new [] { "A", "D" }, 5).SetDescription("The distance of the route A-D should be 5.");
+            yield return new TestCaseData(new [] { "A", "D", "C" }, 13).SetDescription("The distance of the route A - D - C should be 13.");
+            yield return new TestCaseData(new [] { "A", "E", "B", "C", "D" }, 22).SetDescription("The distance of the route A - E - B - C - D should be 22.");
         }
     }
 }

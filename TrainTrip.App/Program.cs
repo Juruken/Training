@@ -193,7 +193,7 @@ namespace TrainTrip.App
 
             if (inputType == InputType.GetShortestRouteByDistance)
             {
-                var trip = tripManager.GetDirectRouteByLowestDistance(stations[0], stations[1]);
+                var trip = tripManager.GetDirectRouteByLowestDistanceWithRecursion(stations[0], stations[1]);
                 return trip != null ? trip.TotalDistance.ToString() : UNKNOWN_ROUTE_MESSAGE;
             }
 

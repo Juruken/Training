@@ -24,11 +24,16 @@ namespace TrainTrip.Managers
 
         // TODO: Delete anything not being used
         // TODO: Also WRAP everything that needs to be wrapped...
-        public Trip GetDirectRouteByLowestDistance(string sourceStation, string destinationStation)
+        public Trip GetDirectRouteByLowestDistanceWithRecursion(string sourceStation, string destinationStation)
         {
-            return m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistance(sourceStation, destinationStation);
+            return m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistanceWithRecursion(sourceStation, destinationStation);
         }
-        
+
+        public Trip GetDirectRouteByLowestDistanceWithoutRecursion(string sourceStation, string destinationStation)
+        {
+            return m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistanceWithoutRecursion(sourceStation, destinationStation);
+        }
+
         public int GetRoutesByMaximumStops(string sourceStation, string destinationStation, int maximumStops)
         {
             var trips = m_TripStopPermutationsCalculator.GetPermutations(sourceStation, destinationStation, maximumStops);

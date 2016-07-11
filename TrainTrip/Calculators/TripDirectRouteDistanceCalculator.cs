@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using TrainTrip.DataModel;
 using TrainTrip.Exceptions;
 
@@ -8,8 +9,7 @@ namespace TrainTrip.Processors
     /// <summary>
     /// Responsible for calculating trips for a given source and destination location
     /// </summary>
-    // TODO: Refactor all Calculators to implement a BaseTripCalculator, so we have a protected m_StationProvider
-    // TODO: and a single validate stations exist function
+    // TODO: Refactor all Calculators to implement a BaseTripCalculator, so we have a protected m_StationProvider and a single validate stations exist function
     public class TripDirectRouteDistanceCalculator : ITripDirectRouteDistanceCalculator
     {
         private readonly IStationProvider m_StationProvider;
@@ -21,16 +21,36 @@ namespace TrainTrip.Processors
             m_CalculatedTrips = new Dictionary<string, List<Trip>>();
         }
 
-        public Trip GetDirectRouteByLowestDistance(string sourceStation, string destinationStation)
+        public Trip GetDirectRouteByLowestDistanceWithoutRecursion(string sourceStation, string destinationStation)
+        {
+            ValidateStationsExist(sourceStation, destinationStation);
+
+            List<Trip> trips;
+            var sourceDestinationKey = sourceStation + destinationStation + false;
+
+            if (!m_CalculatedTrips.ContainsKey(sourceDestinationKey))
+            {
+                trips = GetDirectRoutesTripsByDistance(sourceStation, destinationStation, false);
+            }
+            else
+            {
+                trips = m_CalculatedTrips[sourceDestinationKey];
+            }
+
+            // Expecting the default to be null
+            return trips != null ? trips.OrderBy(t => t.TotalDistance).FirstOrDefault() : null;
+        }
+
+        public Trip GetDirectRouteByLowestDistanceWithRecursion(string sourceStation, string destinationStation)
         {
             ValidateStationsExist(sourceStation, destinationStation);
             
             List<Trip> trips;
-            var sourceDestinationKey = sourceStation + destinationStation;
+            var sourceDestinationKey = sourceStation + destinationStation + true;
 
             if (!m_CalculatedTrips.ContainsKey(sourceDestinationKey))
             {
-                trips = GetDirectRoutesTripsByDistance(sourceStation, destinationStation);
+                trips = GetDirectRoutesTripsByDistance(sourceStation, destinationStation, true);
             }
             else
             {
@@ -41,57 +61,79 @@ namespace TrainTrip.Processors
             return trips != null ? trips.OrderBy(t => t.TotalDistance).FirstOrDefault() : null;
         }
         
-        private List<Trip> GetDirectRoutesTripsByDistance(string sourceStation, string destinationStation)
+        private List<Trip> GetDirectRoutesTripsByDistance(string sourceStation, string destinationStation, bool recursiveSearch)
         {
-            ValidateStationsExist(sourceStation, destinationStation);
-
             var sourceDestinationKey = sourceStation + destinationStation;
 
             if (m_CalculatedTrips.ContainsKey(sourceDestinationKey))
                 return m_CalculatedTrips[sourceDestinationKey];
-            
-            return CalculateTripsByDistance(sourceStation, destinationStation);
-        }
 
-        /// <summary>
-        /// Calculates a trip from the source station to the destination station, under a given maximum distance.
-        /// Allows for user to specify direct routes only. If true, trip will only return if there is a direct route from the sourceStation to destinationStation.
-        /// e.g. 
-        /// Given AB1, A -> B returns a route
-        /// Given AC1, CB1, A -> B returns null
-        /// </summary>
-        /// <param name="sourceStation"></param>
-        /// <param name="destinationStation"></param>
-        /// <param name="maximumDistance"></param>
-        /// <param name="directRoutesOnly"></param>
-        /// <returns></returns>
-        private List<Trip> CalculateTripsByDistance(string sourceStation, string destinationStation)
-        {
-            List<Trip> trips = null;
-            var sourceDestinationKey = sourceStation + destinationStation;
             var source = m_StationProvider.GetStation(sourceStation);
 
-            // Loop of each route to see if they can get to our required destination.
-            foreach (var route in source.Routes.Values)
+            var trips = new List<Trip>();
+            if (recursiveSearch)
             {
-                Trip trip = null;
+                FindStationInTreeRecursively(trips, new HashSet<string>(), source, sourceStation, destinationStation);
+            }
+            else
+            {
+                FindStationInTreeWithoutRecursion(trips, new HashSet<string>(), source, destinationStation);
+            }
+
+            return trips;
+        }
+
+        private void FindStationInTreeWithoutRecursion(List<Trip> trips, HashSet<string> stationsAlreadyVisited, Station currentStation, string destinationStation)
+        {
+            if (stationsAlreadyVisited.Contains(currentStation.Name))
+                return;
+
+            stationsAlreadyVisited.Add(currentStation.Name);
+
+            foreach (var route in currentStation.Routes.Values)
+            {
+                var newTrip = route.ConvertToTrip();
+
                 if (route.DestinationStation == destinationStation)
                 {
-                    trip = route.ConvertToTrip();
+                    trips.Add(newTrip);
+                }
+            }
+        }
+
+
+        // Recursively explore tree until destination station is found. Do not explore the same station twice.
+        private Trip FindStationInTreeRecursively(List<Trip> trips, HashSet<string> stationsAlreadyVisited, Station currentStation, string sourceStation, string destinationStation)
+        {
+            if (stationsAlreadyVisited.Contains(currentStation.Name))
+                return null;
+
+            stationsAlreadyVisited.Add(currentStation.Name);
+
+            foreach (var route in currentStation.Routes.Values)
+            {
+                var newTrip = route.ConvertToTrip();
+
+                if (route.DestinationStation == destinationStation)
+                {
+                    trips.Add(newTrip);
+                    return newTrip;
                 }
                 
+                var trip = FindStationInTreeRecursively(trips, stationsAlreadyVisited, m_StationProvider.GetStation(route.DestinationStation), sourceStation, destinationStation);
                 if (trip == null)
                     continue;
 
-                if (trips == null)
-                    trips = new List<Trip>();
+                trip.TotalDistance = route.Distance + trip.TotalDistance;
+                trip.TripName = currentStation.Name + trip.TripName;
+
+                if (trip.TripName[0].ToString() != sourceStation)
+                    return null;
 
                 trips.Add(trip);
             }
-            
-            m_CalculatedTrips.Add(sourceDestinationKey, trips);
 
-            return trips;
+            return null;
         }
 
         private void ValidateStationsExist(string sourceStation, string destinationStation)

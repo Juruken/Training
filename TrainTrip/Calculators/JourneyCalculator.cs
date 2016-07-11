@@ -45,7 +45,7 @@ namespace TrainTrip.Calculators
                     continue;
                 }
                 
-                var trip = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistance(previousStation, stationName);
+                var trip = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistanceWithoutRecursion(previousStation, stationName);
 
                 if (trip == null)
                 {

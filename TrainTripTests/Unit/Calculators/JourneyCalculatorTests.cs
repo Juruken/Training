@@ -23,7 +23,7 @@ namespace TrainTripTests.Calculators
             CreateTrips();
 
             var tripCalculator = new Mock<ITripDirectRouteDistanceCalculator>();
-            tripCalculator.Setup(r => r.GetDirectRouteByLowestDistance(It.IsAny<string>(), It.IsAny<string>()))
+            tripCalculator.Setup(r => r.GetDirectRouteByLowestDistanceWithoutRecursion(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns((string s, string t) => GetTrip(s, t));
             
             m_JourneyCalculator = new JourneyCalculator(m_StationProvider.Object, tripCalculator.Object);

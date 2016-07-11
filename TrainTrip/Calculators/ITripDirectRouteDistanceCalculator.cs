@@ -5,6 +5,7 @@ namespace TrainTrip.Processors
 {
     public interface ITripDirectRouteDistanceCalculator
     {
-        Trip GetDirectRouteByLowestDistance(string sourceStation, string destinationStation);
+        Trip GetDirectRouteByLowestDistanceWithRecursion(string sourceStation, string destinationStation);
+        Trip GetDirectRouteByLowestDistanceWithoutRecursion(string sourceStation, string destinationStation);
     }
 }

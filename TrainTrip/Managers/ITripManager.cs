@@ -6,7 +6,9 @@ namespace TrainTrip.Managers
     public interface ITripManager
     {
         Journey GetJourney(string[] stations);
-        Trip GetDirectRouteByLowestDistance(string sourceStation, string destinationStation);
+
+        Trip GetDirectRouteByLowestDistanceWithRecursion(string sourceStation, string destinationStation);
+        Trip GetDirectRouteByLowestDistanceWithoutRecursion(string sourceStation, string destinationStation);
 
         int GetTripPermutationsCountByDistance(string sourceStation, string destinationStation, int maximumDistance);
         int GetRoutesByMaximumStops(string sourceStation, string destinationStation, int maximumStops);
