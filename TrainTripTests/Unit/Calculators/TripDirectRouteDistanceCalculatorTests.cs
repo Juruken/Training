@@ -23,25 +23,56 @@ namespace TrainTripTests.Processors
         {           
             Assert.That(() => m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistanceWithoutRecursion("C", "F"), Throws.TypeOf<InvalidStationException>());
         }
-        
+
         // A Routes
+        [TestCase("A", "B", "AB", 5)]
         [TestCase("A", "C", "ABC", 9)]
         [TestCase("A", "D", "AD", 5)]
         [TestCase("A", "E", "AE", 7)]
         // B Routes
         [TestCase("B", "B", "BCEB", 9)]
+        [TestCase("B", "C", "BC", 4)]
+        [TestCase("B", "D", "BCD", 12)]
+        [TestCase("B", "E", "BCE", 6)]
         // C Routes
+        [TestCase("C", "B", "CEB", 5)]
         [TestCase("C", "C", "CEBC", 9)]
+        [TestCase("C", "D", "CD", 8)]
+        [TestCase("C", "E", "CE", 2)]
         // D Routes
+        [TestCase("D", "B", "DEB", 9)]
+        [TestCase("D", "C", "DC", 8)]
         [TestCase("D", "D", "DCD", 16)]
+        [TestCase("D", "E", "DE", 6)]
         // E Routes
-        public void GetDirectRouteByLowestDistanceWithRecursion(string sourceStation, string destinationStation, string expectedShortestTripName, int expectedDistance)
+        [TestCase("E", "B", "EB", 3)]
+        [TestCase("E", "C", "EBC", 7)]
+        [TestCase("E", "D", "EBCD", 15)]
+        [TestCase("E", "E", "EBCE", 9)]
+        public void TestGetDirectRouteByLowestDistanceWithRecursion(string sourceStation, string destinationStation, string expectedShortestTripName, int expectedDistance)
         {
             var trip = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistanceWithRecursion(sourceStation, destinationStation);
             
             Assert.NotNull(trip);
             Assert.AreEqual(expectedDistance, trip.TotalDistance);
             Assert.AreEqual(expectedShortestTripName, trip.TripName);
+        }
+
+        // A Routes 
+        [TestCase("A", "A")]
+        // B Routes
+        [TestCase("B", "A")]
+        // C Routes
+        [TestCase("C", "A")]
+        // D Routes
+        [TestCase("D", "A")]
+        // E Routes
+        [TestCase("E", "A")]
+        public void TestGetFailToGetDirectRouteByLowestDistanceWithRecursion(string sourceStation, string destinationStation)
+        {
+            var trip = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistanceWithRecursion(sourceStation, destinationStation);
+
+            Assert.IsNull(trip);
         }
 
         // A Routes
@@ -96,3 +127,4 @@ namespace TrainTripTests.Processors
         }
     }
 }
+
