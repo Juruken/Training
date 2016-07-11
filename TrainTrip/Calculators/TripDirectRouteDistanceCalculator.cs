@@ -68,15 +68,14 @@ namespace TrainTrip.Processors
             if (m_CalculatedTrips.ContainsKey(sourceDestinationKey))
                 return m_CalculatedTrips[sourceDestinationKey];
 
-            var source = m_StationProvider.GetStation(sourceStation);
-
             var trips = new List<Trip>();
             if (recursiveSearch)
             {
-                FindStationInTreeRecursively(trips, new HashSet<string>(), source, sourceStation, destinationStation);
+                trips = FindStationInTreeRecursively(new Dictionary<string, List<Trip>>(), sourceStation, sourceStation, destinationStation);
             }
             else
             {
+                var source = m_StationProvider.GetStation(sourceStation);
                 FindStationInTreeWithoutRecursion(trips, new HashSet<string>(), source, destinationStation);
             }
 
@@ -103,37 +102,45 @@ namespace TrainTrip.Processors
 
 
         // Recursively explore tree until destination station is found. Do not explore the same station twice.
-        private Trip FindStationInTreeRecursively(List<Trip> trips, HashSet<string> stationsAlreadyVisited, Station currentStation, string sourceStation, string destinationStation)
+        private List<Trip> FindStationInTreeRecursively(Dictionary<string, List<Trip>> stationsAlreadyVisited, string currentStationName, string sourceStation, string destinationStation)
         {
-            if (stationsAlreadyVisited.Contains(currentStation.Name))
-                return null;
+            // If we've already visited return what we found last time.
+            if (stationsAlreadyVisited.ContainsKey(currentStationName))
+                return stationsAlreadyVisited[currentStationName];
 
-            stationsAlreadyVisited.Add(currentStation.Name);
+            // Add our newly visited station to the stations visited map, so we don't infinitely recurse.
+            var potentialTrips = new List<Trip>();
+            stationsAlreadyVisited.Add(currentStationName, potentialTrips);
 
+            var currentStation = m_StationProvider.GetStation(currentStationName);
+
+            // Need to explore every possible route!
             foreach (var route in currentStation.Routes.Values)
             {
-                var newTrip = route.ConvertToTrip();
-
                 if (route.DestinationStation == destinationStation)
                 {
-                    trips.Add(newTrip);
-                    return newTrip;
+                    potentialTrips.Add(route.ConvertToTrip());
+                    continue;
                 }
-                
-                var trip = FindStationInTreeRecursively(trips, stationsAlreadyVisited, m_StationProvider.GetStation(route.DestinationStation), sourceStation, destinationStation);
-                if (trip == null)
+
+                var resultingTrips = FindStationInTreeRecursively(stationsAlreadyVisited, route.DestinationStation, sourceStation, destinationStation);
+                if (resultingTrips == null || !resultingTrips.Any())
                     continue;
 
-                trip.TotalDistance = route.Distance + trip.TotalDistance;
-                trip.TripName = currentStation.Name + trip.TripName;
+                foreach (var tripResult in resultingTrips)
+                {
+                    var fullTrip = new Trip();
+                    fullTrip.TotalDistance = route.Distance + tripResult.TotalDistance;
+                    fullTrip.TripName = currentStation.Name + tripResult.TripName;
 
-                if (trip.TripName[0].ToString() != sourceStation)
-                    return null;
-
-                trips.Add(trip);
+                    if (tripResult.TripName.EndsWith(destinationStation))
+                    {
+                        potentialTrips.Add(fullTrip);
+                    }
+                }
             }
 
-            return null;
+            return potentialTrips;
         }
 
         private void ValidateStationsExist(string sourceStation, string destinationStation)
