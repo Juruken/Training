@@ -22,16 +22,16 @@ namespace TrainTrip.Managers
             m_JourneyCalculator = journeyCalculator;
         }
 
-        // TODO: Delete anything not being used
-        // TODO: Also WRAP everything that needs to be wrapped...
-        public Trip GetDirectRouteByLowestDistanceWithRecursion(string sourceStation, string destinationStation)
+        public int? GetJourneyDistance(string[] stations)
         {
-            return m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistanceWithRecursion(sourceStation, destinationStation);
+            var journey = m_JourneyCalculator.GetJourneyByRoutes(stations);
+            return journey != null ? (int?)journey.Distance : null;
         }
 
-        public Trip GetDirectRouteByLowestDistanceWithoutRecursion(string sourceStation, string destinationStation)
+        public int? GetShortestRouteByDistanceWithRecursion(string sourceStation, string destinationStation)
         {
-            return m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistanceWithoutRecursion(sourceStation, destinationStation);
+            var trip = m_TripDirectRouteDistanceCalculator.GetDirectRouteByLowestDistanceWithRecursion(sourceStation, destinationStation);
+            return trip != null ? (int?)trip.TotalDistance : null;
         }
 
         public int GetRoutesByMaximumStops(string sourceStation, string destinationStation, int maximumStops)
@@ -56,11 +56,6 @@ namespace TrainTrip.Managers
         {
             var trips = m_TripDistancePermutationsCalculator.GetPermutations(sourceStation, destinationStation, maximumDistance);
             return trips != null ? trips.Count : 0;
-        }
-
-        public Journey GetJourney(string[] stations)
-        {
-            return m_JourneyCalculator.GetJourneyByRoutes(stations);
         }
     }
 }

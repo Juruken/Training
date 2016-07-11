@@ -31,7 +31,7 @@ namespace TrainTrip.App
             var dataProvider = new DataProvider(filePath);
             var tripFactory = new TripFactory(inputDelimeterString[0], dataProvider);
             var tripManager = tripFactory.CreateTripManager();
-            var inputValidator = tripFactory.GetInputValidator();
+            var inputValidator = tripFactory.CreateInputValidator();
 
             BuildOptions();
             BuildPromptText();
@@ -175,14 +175,20 @@ namespace TrainTrip.App
 
             if (inputType == InputType.GetJourneyDistance)
             {
-                var journey = tripManager.GetJourney(stations);
-                return journey != null ? journey.Distance.ToString() : UNKNOWN_ROUTE_MESSAGE;
+                var distance = tripManager.GetJourneyDistance(stations);
+                if (!distance.HasValue)
+                    return UNKNOWN_ROUTE_MESSAGE;
+
+                return distance.Value.ToString();
             }
 
             if (inputType == InputType.GetShortestRouteByDistance)
             {
-                var trip = tripManager.GetDirectRouteByLowestDistanceWithRecursion(stations[0], stations[1]);
-                return trip != null ? trip.TotalDistance.ToString() : UNKNOWN_ROUTE_MESSAGE;
+                var distance = tripManager.GetShortestRouteByDistanceWithRecursion(stations[0], stations[1]);
+                if (!distance.HasValue)
+                    return UNKNOWN_ROUTE_MESSAGE;
+
+                return distance.ToString();
             }
 
             throw new ArgumentException("Unknown Input Type");

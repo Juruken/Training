@@ -62,6 +62,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Component\CodingTestComponentTest.cs" />
     <Compile Include="Component\TripManagerTests.cs" />
     <Compile Include="Unit\Calculators\BaseCalculatorTests.cs" />
     <Compile Include="Unit\Calculators\JourneyCalculatorTests.cs" />

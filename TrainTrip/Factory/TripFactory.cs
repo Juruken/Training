@@ -40,7 +40,7 @@ namespace TrainTrip.Factory
             return new TripManager(tripDistanceCalculator, tripStopCalculator, tripPermutationsCalculator, journeyCalculator);
         }
 
-        public IInputValidator GetInputValidator()
+        public IInputValidator CreateInputValidator()
         {
             return new InputValidator();
         }

@@ -14,12 +14,12 @@ namespace TrainTripTests.Component
     public class TripManagerTests
     {
         private ITripManager m_TripManager;
-
-        private const string m_TestData = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
-
+        
         [SetUp]
         public void Setup()
         {
+            var m_TestData = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
+
             var fileDataProvider = new Mock<IDataProvider>();
             fileDataProvider.Setup(r => r.GetData()).Returns(new List<string> { m_TestData });
 
@@ -35,16 +35,6 @@ namespace TrainTripTests.Component
             Assert.NotNull(countOfMatchingTrips);
             Assert.AreEqual(expectedResults, countOfMatchingTrips);
         }
-
-        /*[TestCase("A", "C", 9, "ABC")]
-        public void TestGetDirectRouteByLowestDistance(string sourceStation, string destinationStation, int expectedDistance, string expectedName)
-        {
-            var trip = m_TripManager.GetDirectRouteByLowestDistance(sourceStation, destinationStation);
-
-            Assert.NotNull(trip);
-            Assert.AreEqual(expectedDistance, trip.TotalDistance);
-            Assert.AreEqual(expectedName, trip.TripName);
-        }*/
         
         [TestCase("C", "C", 30, 7)]
         public void TestGetPermutations(string sourceStation, string destinationStation, int maximumDistance, int expectedResult)
@@ -82,16 +72,16 @@ namespace TrainTripTests.Component
         [Test, TestCaseSource(typeof(TestDataProvider), "GetJourneyDirectRouteCases")]
         public void TestGetJourneyDirectRouteOnly(string[] stations, int expectedResult)
         {
-            var journey = m_TripManager.GetJourney(stations);
+            var journey = m_TripManager.GetJourneyDistance(stations);
 
             Assert.NotNull(journey);
-            Assert.AreEqual(expectedResult, journey.Distance);
+            Assert.AreEqual(expectedResult, journey.Value);
         }
 
         [Test]
         public void TestInvalidDirectJourneyThrowsException()
         {
-            Assert.That(() => m_TripManager.GetJourney(new[] { "A", "E", "D" }), Throws.TypeOf<InvalidTripException>());
+            Assert.That(() => m_TripManager.GetJourneyDistance(new[] { "A", "E", "D" }), Throws.TypeOf<InvalidTripException>());
         }
     }
 }
